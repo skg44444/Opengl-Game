@@ -8,6 +8,6 @@ namespace Lib
 		ApplicationLayer() = default;
 		virtual ~ApplicationLayer() = default;
 
-		virtual void OnUpdate(float dt) = 0;
+		virtual void OnUpdate(float dt, float AspectRatio) = 0;
 	};
 }
