@@ -4,9 +4,6 @@
 #include "Renderer/Model.h"
 #include "Scene/Components.h"
 
-#include <glad/glad.h>
-
-
 namespace Lib
 {
 	Application::Application()
@@ -16,6 +13,10 @@ namespace Lib
 
 	Application::~Application()
 	{
+		for (ApplicationLayer* layer : m_LayerStack)
+		{
+			delete layer;
+		}
 	}
 
 	void Application::Run()

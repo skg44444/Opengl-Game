@@ -31,6 +31,10 @@ function includeglm()
 	includedirs "Libraries/glm"
 end
 
+function includeentt()
+	includedirs "Libraries/entt/Include"
+end
+
 -- This function links statically against GLFW
 function linkGLFW()
 	libdirs "Libraries/GLFW/Lib"
@@ -102,12 +106,14 @@ project "Lib"
 
 	includeGLFW()
     includeGlad()
+	includeentt()
 
 function useLib()
 	-- The library's public headers
 	includedirs "Projects/Lib/src"
 
 	includeglm()
+	includeentt()
 
 	-- We link against a library that's in the same workspace, so we can just
 	-- use the project name - premake is really smart and will handle everything for us.
@@ -125,7 +131,7 @@ project "GameCore"
 
 	files 
 	{
-		"Projects/GameCore/**"
+		"Projects/GameCore/src/**"
 	}
 
 	-- We also need the headers
