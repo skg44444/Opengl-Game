@@ -33,7 +33,7 @@ namespace Lib
 		{
 			std::cout << "Warning: Uniform '" << name << "' does not exist" << std::endl;
 		}
-		glProgramUniformMatrix4fv(m_Id, location, 1, GL_FALSE, glm::value_ptr(value));
+		glProgramUniform4fv(m_Id, location, 1, glm::value_ptr(value));
 	}
 
 	void OpenGlShader::SetVec3(const std::string& name, const glm::vec3& value)
@@ -43,7 +43,7 @@ namespace Lib
 		{
 			std::cout << "Warning: Uniform '" << name << "' does not exist" << std::endl;
 		}
-		glProgramUniformMatrix4fv(m_Id, location, 1, GL_FALSE, glm::value_ptr(value));
+		glProgramUniform3fv(m_Id, location, 1, glm::value_ptr(value));
 	}
 
 	void OpenGlShader::Bind()

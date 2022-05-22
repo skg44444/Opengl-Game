@@ -14,10 +14,11 @@ namespace Lib
 
 		glm::mat4 GetTransform()
 		{
-			glm::mat4 rotation = glm::toMat4(glm::quat(Rotation));
 
+			glm::mat4 rotation = glm::toMat4(glm::quat(Rotation));
+			
 			return glm::translate(glm::mat4(1.0f), Translation) *
-				glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), Rotation) *
+				rotation *
 				glm::scale(glm::mat4(1.0f), Scale);
 		}
 	};

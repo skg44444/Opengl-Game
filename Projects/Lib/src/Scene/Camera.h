@@ -19,6 +19,9 @@ namespace Lib
 		void SetAspectRatio(float aspectRatio);
 
 		void SetPosition(glm::vec3& pos) { m_CameraPos = pos; CalculateLookAt(); }
+		glm::vec3 GetPosition() { return m_CameraPos; }
+
+		void SetRotation(glm::vec3& rotation) { m_CameraRotation = rotation; CalculateLookAt(); }
 
 		const glm::mat4& GetProjection() const { return m_Projection; }
 		const glm::mat4& GetView() const { return m_View; }
@@ -32,6 +35,8 @@ namespace Lib
 		glm::mat4 m_View = glm::mat4(1.0f);
 
 		glm::vec3 m_CameraPos = glm::vec3(0.0f);
+		glm::vec3 m_CameraRotation = glm::vec3(0.0f);
+		glm::vec3 m_CameraZoom = glm::vec3(1.0f);
 
 		float m_VerticalFOV = glm::radians(45.0f);
 		float m_NearClip = 0.1f;

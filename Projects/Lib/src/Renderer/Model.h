@@ -8,9 +8,10 @@ namespace Lib
 	struct Vertex
 	{
 		glm::vec3 Position;
+		glm::vec3 Normals;
 
 		bool operator==(const Vertex& other) const {
-			return Position == other.Position;
+			return Position == other.Position && Normals == other.Normals;
 		}
 	};
 
