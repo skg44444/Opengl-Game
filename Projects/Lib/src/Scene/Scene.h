@@ -16,10 +16,12 @@ namespace Lib
 		void DestroyEntity(Entity entity);
 		Entity GetEntityByTag(const std::string& name);
 		void OnUpdate(float dt);
+		void SetAspectRatio(float aspectRatio) { m_AspectRatio = aspectRatio; }
 	private:
 		template<typename T>
 		void OnComponentAdded(Entity entity, T& component);
 	private:
+		float m_AspectRatio;
 		entt::registry m_Registry;
 		friend class Entity;
 	};

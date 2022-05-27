@@ -29,6 +29,7 @@ SceneLayer::~SceneLayer()
 
 void SceneLayer::OnUpdate(float dt, float AspectRatio)
 {
+	m_ActiveScene->SetAspectRatio(AspectRatio);
 	auto& modelentity = m_ActiveScene->GetEntityByTag("model");
 	auto& transform = modelentity.GetComponents<Lib::TransformComponent>();
 	transform.Rotation.x += 0.005f;

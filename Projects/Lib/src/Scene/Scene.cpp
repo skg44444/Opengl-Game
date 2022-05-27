@@ -68,6 +68,7 @@ namespace Lib
 				break;
 			}
 		}
+		CurrentCamera.SetAspectRatio(m_AspectRatio);
 		Renderer3D::BeginScene(CurrentCamera, CameraView, LightPos);
 		auto lightgroup = m_Registry.group<TransformComponent>(entt::get<ModelComponent, LightComponent>);
 		for (auto entity : lightgroup)
