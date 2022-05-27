@@ -14,14 +14,14 @@ namespace Lib
 		template<typename T>
 		bool HasComponent()
 		{
-			return m_Scene->m_Registry.has<T>(m_EntityHandle);
+			return m_Scene->m_Registry.any_of<T>(m_EntityHandle);
 		}
 
 		template<typename T, typename... Args>
 		T& AddComponent(Args&... args)
 		{
 			T& component = m_Scene->m_Registry.emplace<T>(m_EntityHandle, std::forward<Args>(args)...);
-			//m_Scene->OnComponentAdded(*this, component);
+			m_Scene->OnComponentAdded(*this, component);
 			return component;
 		}
 

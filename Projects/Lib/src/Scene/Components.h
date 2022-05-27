@@ -26,7 +26,7 @@ namespace Lib
 		TransformComponent(const glm::vec3 & translation)
 			: Translation(translation) {}
 
-		glm::mat4 GetTransform()
+		glm::mat4 GetTransform() const
 		{
 
 			glm::mat4 rotation = glm::toMat4(glm::quat(Rotation));
@@ -36,7 +36,7 @@ namespace Lib
 				glm::scale(glm::mat4(1.0f), Scale);
 		}
 
-		glm::mat4 GetView()
+		glm::mat4 GetView() const
 		{
 			return glm::inverse(GetTransform());
 		}
@@ -46,7 +46,7 @@ namespace Lib
 	{
 		Camera SceneCamera;
 
-		bool current = false;
+		bool current = true;
 
 		CameraComponent() = default;
 		CameraComponent(const CameraComponent&) = default;
@@ -56,10 +56,22 @@ namespace Lib
 	{
 		std::shared_ptr<Model> ModelPtr = nullptr;
 
-		ModelComponent(const std::shared_ptr<Model> model)
+		ModelComponent() = default;
+		ModelComponent(const ModelComponent&) = default;
+		ModelComponent(const std::shared_ptr<Model>& model)
 			:ModelPtr(model)
 		{
 
 		}
+	};
+
+	struct LightComponent
+	{
+		glm::vec3 Color = glm::vec3(1.0f);
+
+		LightComponent() = default;
+		LightComponent(const LightComponent&) = default;
+		LightComponent(const glm::vec3 & color)
+			: Color(color) {}
 	};
 }

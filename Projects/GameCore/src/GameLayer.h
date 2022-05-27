@@ -1,9 +1,7 @@
 #pragma once
 #include "Core/ApplicationLayer.h"
 
-#include <string>
-#include <memory>
-
+#include <Scene/Entity.h>
 #include "Renderer/Shader.h"
 #include "Scene/Components.h"
 
@@ -19,6 +17,8 @@ private:
 	std::shared_ptr<Lib::Shader> lightShader;
 	std::shared_ptr<Lib::Model> model;
 	std::shared_ptr<Lib::Model> cubemodel;
+
+	std::shared_ptr<Lib::Scene> m_ActiveScene;
 	
 	Lib::TransformComponent transform;
 	Lib::TransformComponent cubeTransform;

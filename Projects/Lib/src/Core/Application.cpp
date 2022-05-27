@@ -2,7 +2,7 @@
 #include "Application.h"
 #include "Renderer/Shader.h"
 #include "Renderer/Model.h"
-#include "Scene/Components.h"
+#include "Renderer/Renderer.h"
 
 namespace Lib
 {
@@ -21,6 +21,7 @@ namespace Lib
 
 	void Application::Run()
 	{		
+		Renderer3D::Init();
 		while (m_ApplicationWindow->IsOpen())
 		{
 			m_ApplicationWindow->Clear();

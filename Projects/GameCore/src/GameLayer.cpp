@@ -10,6 +10,11 @@ GameLayer::GameLayer()
 
 	cubemodel = Lib::Model::CreateModel("res/models/cube.obj");
 
+	m_ActiveScene = std::make_shared<Lib::Scene>();
+
+	auto& modelentity = m_ActiveScene->CreateEntity("model");
+	modelentity.AddComponent<Lib::ModelComponent>(model);
+
 	cubeTransform.Translation = glm::vec3(-1.0f, 1.0f, -3.0f);
 	cubeTransform.Scale = glm::vec3(0.1f);
 
@@ -46,4 +51,7 @@ void GameLayer::OnUpdate(float dt, float AspectRatio)
 	shader->SetMat4("view", camera.SceneCamera.GetView());
 	shader->SetVec3("objectColor", glm::vec3(1.0f, 1.0f, 1.0f));
 	cubemodel->Draw();
+
 }
+
+

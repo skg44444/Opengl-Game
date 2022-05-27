@@ -19,7 +19,6 @@ void main()
 	surfaceNormal = (model * vec4(aNormal, 0.0)).xyz;
 	toLightVector = lightPos - worldPosition.xyz;
 	toCameraVector = (inverse(view) * vec4(0.0, 0.0, 0.0, 1.0)).xyz - worldPosition.xyz;
-	//Normal = vec3(model*vec4(aNormal, 1.0));
 }
 
 #fragment

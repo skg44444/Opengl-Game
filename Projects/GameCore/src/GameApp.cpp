@@ -1,12 +1,12 @@
 #include "Core/Start.h"
-#include "GameLayer.h"
+#include "SceneLayer.h"
 
 class Game : public Lib::Application
 {
 public:
 	Game()
 	{
-		PushLayer(new GameLayer());
+		PushLayer(new SceneLayer());
 	}
 
 	~Game()
