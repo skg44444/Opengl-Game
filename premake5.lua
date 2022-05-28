@@ -94,6 +94,7 @@ project "Lib"
 	includedirs 
 	{
 		"Projects/Lib/src",
+		"Projects/Lib/vendor",
 		"Libraries/glm",
 		"Libraries/tinyobjloader"
 	}
@@ -110,7 +111,11 @@ project "Lib"
 
 function useLib()
 	-- The library's public headers
-	includedirs "Projects/Lib/src"
+	includedirs 
+	{
+		"Projects/Lib/src",
+		"Projects/Lib/vendor"
+	}
 
 	includeglm()
 	includeentt()

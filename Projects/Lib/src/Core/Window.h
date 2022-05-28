@@ -18,6 +18,8 @@ namespace Lib
 
 		virtual void Clear() = 0;
 
+		virtual void* GetNativeWindow() const = 0;
+
 		static std::unique_ptr<Window> CreateWindow();
 	};
 }

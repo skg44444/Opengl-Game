@@ -15,6 +15,7 @@ namespace Lib
 		void OnUpdate() override;
 		bool IsOpen() override { return m_Data.IsOpen; }
 		float GetAspectRatio() override { return (float)m_Data.width / (float)m_Data.height; }
+		void* GetNativeWindow() const { return m_Window; }
 	private:
 		void OnInit();
 		void OnDestroy();
