@@ -1,5 +1,7 @@
 #include "SceneLayer.h"
 
+#include <imgui.h>
+
 SceneLayer::SceneLayer()
 {
 	m_ActiveScene = std::make_shared<Lib::Scene>();
@@ -35,4 +37,9 @@ void SceneLayer::OnUpdate(float dt, float AspectRatio)
 	transform.Rotation.x += 0.005f;
 	transform.Rotation.y += 0.005f;
 	m_ActiveScene->OnUpdate(dt);
+}
+
+void SceneLayer::OnImGuiRender()
+{
+	ImGui::ShowDemoWindow(false);
 }
