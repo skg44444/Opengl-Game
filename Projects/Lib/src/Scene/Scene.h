@@ -17,6 +17,7 @@ namespace Lib
 		Entity GetEntityByTag(const std::string& name);
 		void OnUpdate(float dt);
 		void SetAspectRatio(float aspectRatio) { m_AspectRatio = aspectRatio; }
+		std::vector<std::string> GetEntities();
 	private:
 		template<typename T>
 		void OnComponentAdded(Entity entity, T& component);

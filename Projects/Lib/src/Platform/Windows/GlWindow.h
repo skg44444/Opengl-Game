@@ -24,7 +24,7 @@ namespace Lib
 
 		struct WindowData
 		{
-			uint32_t width=800, height=600;
+			uint32_t width= 1920, height=1080;
 			bool IsOpen=true;
 		};
 

@@ -15,4 +15,5 @@ public:
 	void OnImGuiRender() override;
 private:
 	std::shared_ptr<Lib::Scene> m_ActiveScene;
+	Lib::Entity m_SelectionContext;
 };

@@ -89,6 +89,17 @@ namespace Lib
 		Renderer3D::EndScene();
 	}
 
+	std::vector<std::string> Scene::GetEntities()
+	{
+		std::vector<std::string> listOfEntities;
+
+		auto view = m_Registry.view<TagComponent>();
+		for (auto entity : view)
+			listOfEntities.push_back(view.get<TagComponent>(entity).Tag);
+
+		return listOfEntities;
+	}
+
 	template<typename T>
 	void Scene::OnComponentAdded(Entity entity, T& component)
 	{
