@@ -15,6 +15,7 @@ namespace Lib
 		virtual bool IsOpen() = 0;
 
 		virtual float GetAspectRatio() = 0;
+		virtual bool IsMinimised() = 0;
 
 		virtual void Clear() = 0;
 

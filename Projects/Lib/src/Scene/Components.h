@@ -2,12 +2,14 @@
 
 #include "Renderer/Model.h"
 #include "Scene/Camera.h"
+#include "Core/UUID.h"
 
 namespace Lib
 {
 	struct TagComponent
 	{
 		std::string Tag;
+		UUID uuid = UUID();
 
 		TagComponent() = default;
 		TagComponent(const TagComponent&) = default;

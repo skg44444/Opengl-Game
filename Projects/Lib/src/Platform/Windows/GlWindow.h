@@ -14,6 +14,7 @@ namespace Lib
 		void Clear() override;
 		void OnUpdate() override;
 		bool IsOpen() override { return m_Data.IsOpen; }
+		bool IsMinimised() override { return m_Data.width == 0 || m_Data.height == 0; }
 		float GetAspectRatio() override { return (float)m_Data.width / (float)m_Data.height; }
 		void* GetNativeWindow() const { return m_Window; }
 	private:

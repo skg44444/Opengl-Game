@@ -38,9 +38,11 @@ void SceneLayer::OnUpdate(float dt, float AspectRatio)
 void SceneLayer::OnImGuiRender()
 {
 	ImGui::Begin("Entities");
-	for (auto tag : m_ActiveScene->GetEntities())
+	for (auto uuid : m_ActiveScene->GetEntityUUIds())
 	{
-		auto& entity = m_ActiveScene->GetEntityByTag(tag);
+		auto& entity = m_ActiveScene->GetEntityByUUID(uuid);
+		auto& tag = entity.GetComponents<Lib::TagComponent>().Tag;
+		
 		ImGuiTreeNodeFlags flags = ((m_SelectionContext == entity) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
 
 		flags |= ImGuiTreeNodeFlags_SpanAvailWidth;
@@ -84,18 +86,4 @@ void SceneLayer::OnImGuiRender()
 		}
 	}
 	ImGui::End();
-
-	//ImGui::ShowDemoWindow();
-	//if (currentEntityTag != "")
-	//{
-	//	auto& modelentity = m_ActiveScene->GetEntityByTag(currentEntityTag.c_str());
-	//	auto& transform = modelentity.GetComponents<Lib::TransformComponent>();
-	//
-	//	ImGui::Begin("Slider");
-	//	ImGui::Text("Transformation");
-	//	ImGui::SliderFloat3("Translation", &transform.Translation.x, -10.0f, 10.0f);
-	//	ImGui::SliderFloat3("Rotation", &transform.Rotation.x, -10.0f, 10.0f);
-	//	ImGui::SliderFloat3("Scale", &transform.Scale.x, 0.0f, 2.0f);
-	//	ImGui::End();
-	//}
 }

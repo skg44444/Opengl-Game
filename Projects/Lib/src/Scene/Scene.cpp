@@ -39,6 +39,19 @@ namespace Lib
 		}
 	}
 
+	Entity Scene::GetEntityByUUID(const uint64_t uuid)
+	{
+		auto view = m_Registry.view<TagComponent>();
+		for (auto entity : view)
+		{
+			const auto& entityid = (uint64_t)view.get<TagComponent>(entity).uuid;
+			if (entityid == uuid)
+			{
+				return Entity{ entity, this };
+			}
+		}
+	}
+
 	void Scene::OnUpdate(float dt)
 	{
 		Camera CurrentCamera;
@@ -96,6 +109,17 @@ namespace Lib
 		auto view = m_Registry.view<TagComponent>();
 		for (auto entity : view)
 			listOfEntities.push_back(view.get<TagComponent>(entity).Tag);
+
+		return listOfEntities;
+	}
+
+	std::vector<uint64_t> Scene::GetEntityUUIds()
+	{
+		std::vector<uint64_t> listOfEntities;
+
+		auto view = m_Registry.view<TagComponent>();
+		for (auto entity : view)
+			listOfEntities.push_back(view.get<TagComponent>(entity).uuid);
 
 		return listOfEntities;
 	}

@@ -29,24 +29,24 @@ namespace Lib
 	{		
 		Renderer3D::Init();
 
-		
-
-
 		while (m_ApplicationWindow->IsOpen())
 		{
 			m_ApplicationWindow->Clear();
 
-			for (ApplicationLayer* layer : m_LayerStack)
+			if (!m_ApplicationWindow->IsMinimised())
 			{
-				layer->OnUpdate(0.0f, m_ApplicationWindow->GetAspectRatio());
-			}
+				for (ApplicationLayer* layer : m_LayerStack)
+				{
+					layer->OnUpdate(0.0f, m_ApplicationWindow->GetAspectRatio());
+				}
 
-			ImGuiLayer::BeginFrame();
-			for (ApplicationLayer* layer : m_LayerStack)
-			{
-				layer->OnImGuiRender();
+				ImGuiLayer::BeginFrame();
+				for (ApplicationLayer* layer : m_LayerStack)
+				{
+					layer->OnImGuiRender();
+				}
+				ImGuiLayer::EndFrame();
 			}
-			ImGuiLayer::EndFrame();
 
 			m_ApplicationWindow->OnUpdate();
 		}
