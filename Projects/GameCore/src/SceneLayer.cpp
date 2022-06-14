@@ -26,8 +26,6 @@ SceneLayer::SceneLayer()
 	auto& cameraentity = m_ActiveScene->CreateEntity("camera");
 	cameraentity.AddComponent<Lib::CameraComponent>();
 	auto& cameratransform = cameraentity.GetComponents<Lib::TransformComponent>();
-
-	auto& emptyentity = m_ActiveScene->CreateEntity("empty entity");
 }
 
 SceneLayer::~SceneLayer()
@@ -43,6 +41,8 @@ void SceneLayer::OnUpdate(float dt, float AspectRatio)
 void SceneLayer::OnImGuiRender()
 {
 	ImGui::Begin("Entities");
+	if (ImGui::Button("New Entity"))
+		auto& modelentity = m_ActiveScene->CreateEntity("New Empty Entity");
 	for (auto uuid : m_ActiveScene->GetEntityUUIds())
 	{
 		auto& entity = m_ActiveScene->GetEntityByUUID(uuid);
@@ -116,6 +116,11 @@ void SceneLayer::OnImGuiRender()
 			ImGui::Text(modelPath.c_str());
 			ImGui::EndGroup();
 		}
+		if (ImGui::Button("Destroy"))
+		{
+			m_ActiveScene->DestroyEntity(m_SelectionContext);
+			m_SelectionContext = {};
+		}
 		ImGui::End();
 	}
 
@@ -129,12 +134,15 @@ void SceneLayer::OnImGuiRender()
 		ImGui::BeginGroup();
 		ImGui::Text("ModelPath");
 		static char buf3[256];
-		if (ImGui::InputText("ModelPath", buf3, IM_ARRAYSIZE(buf3)))
+
+		auto modelpathinput = ImGui::InputText("ModelPath", buf3, IM_ARRAYSIZE(buf3));
+		if (ImGui::Button("Add"))
 		{
 			//std::string modelpath(buf3);
 			if (!ModelLibrary[buf3])
 			{
 				ModelLibrary[buf3] = Lib::Model::CreateModel(buf3);
+				ImGui::CloseCurrentPopup();
 			}
 			//tag.Tag = buf;
 		}
