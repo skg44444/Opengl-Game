@@ -57,11 +57,12 @@ namespace Lib
 	struct ModelComponent
 	{
 		std::shared_ptr<Model> ModelPtr = nullptr;
+		std::string m_Path;
 
 		ModelComponent() = default;
 		ModelComponent(const ModelComponent&) = default;
 		ModelComponent(const std::shared_ptr<Model>& model)
-			:ModelPtr(model)
+			:ModelPtr(model), m_Path(model->GetPath())
 		{
 
 		}

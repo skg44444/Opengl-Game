@@ -23,7 +23,9 @@ namespace Lib
 		TinyObjModel(const std::string& filepath);
 		~TinyObjModel();
 		void Draw() const override;
+		std::string GetPath() const override { return m_Path; }
 	private:
 		std::vector<std::shared_ptr<OpenGlMesh>> m_Meshes;
+		std::string m_Path;
 	};
 }

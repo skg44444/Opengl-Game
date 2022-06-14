@@ -19,6 +19,7 @@ namespace std {
 namespace Lib
 {
 	TinyObjModel::TinyObjModel(const std::string& filepath)
+		:m_Path(filepath)
 	{
 		tinyobj::ObjReaderConfig reader_config;
 		reader_config.mtl_search_path = "res/models"; // Path to material files

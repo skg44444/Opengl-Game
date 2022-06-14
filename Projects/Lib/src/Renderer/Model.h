@@ -22,6 +22,8 @@ namespace Lib
 
 		virtual void Draw() const = 0;
 
+		virtual std::string GetPath() const = 0;
+
 		static std::shared_ptr<Model> CreateModel(const std::string& filepath);
 	};
 }
