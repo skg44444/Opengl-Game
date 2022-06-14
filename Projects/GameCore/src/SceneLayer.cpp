@@ -116,6 +116,39 @@ void SceneLayer::OnImGuiRender()
 			ImGui::Text(modelPath.c_str());
 			ImGui::EndGroup();
 		}
+		if (m_SelectionContext.HasComponent<Lib::LightComponent>())
+		{
+			auto& lightComponent = m_SelectionContext.GetComponents<Lib::LightComponent>();
+
+			ImGui::Text("Light");
+			ImGui::ColorEdit3("Color", &lightComponent.Color.x);
+		}
+		if (m_SelectionContext.HasComponent<Lib::CameraComponent>())
+		{
+			auto& currentCameraPtr = m_SelectionContext.GetComponents<Lib::CameraComponent>();
+			ImGui::Text("Camera");
+			ImGui::Checkbox("Current Camera", &currentCameraPtr.current);
+		}
+		
+		if (ImGui::Button("Add Component"))
+			ImGui::OpenPopup("AddComponent");
+		if (ImGui::BeginPopup("AddComponent"))
+		{
+			if (ImGui::MenuItem("Camera"))
+			{
+				if (!m_SelectionContext.HasComponent<Lib::CameraComponent>())
+					m_SelectionContext.AddComponent<Lib::CameraComponent>();
+				ImGui::CloseCurrentPopup();
+			}
+			if (ImGui::MenuItem("Light"))
+			{
+				if (!m_SelectionContext.HasComponent<Lib::LightComponent>())
+					m_SelectionContext.AddComponent<Lib::LightComponent>();
+				ImGui::CloseCurrentPopup();
+			}
+			ImGui::EndPopup();
+		}
+
 		if (ImGui::Button("Destroy"))
 		{
 			m_ActiveScene->DestroyEntity(m_SelectionContext);
