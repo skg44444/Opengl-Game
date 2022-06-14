@@ -90,30 +90,17 @@ void SceneLayer::OnImGuiRender()
 			ImGui::SliderFloat3("Rotation", &transform.Rotation.x, -10.0f, 10.0f);
 			ImGui::SliderFloat3("Scale", &transform.Scale.x, 0.0f, 2.0f);
 		}
-		if (!m_SelectionContext.HasComponent<Lib::ModelComponent>())
+		if (m_SelectionContext.HasComponent<Lib::ModelComponent>())
 		{
+			auto& modelComponent = m_SelectionContext.GetComponents<Lib::ModelComponent>();
 			ImGui::BeginGroup();
 			ImGui::Text("ModelPath");
 			static char buf2[256];
 
 			auto modelpathinput = ImGui::InputText("ModelPath", buf2, IM_ARRAYSIZE(buf2));
-			if (ImGui::Button("Set"))
-			{
-				if (!ModelLibrary[buf2])
-				{
-					ModelLibrary[buf2] = Lib::Model::CreateModel(buf2);
-				}
 
-				m_SelectionContext.AddComponent<Lib::ModelComponent>(ModelLibrary[buf2]);
-			}
-			ImGui::EndGroup();
-		}
-		else
-		{
-			auto& modelPath = m_SelectionContext.GetComponents<Lib::ModelComponent>().m_Path;
-			ImGui::BeginGroup();
-			ImGui::Text("ModelPath");
-			ImGui::Text(modelPath.c_str());
+			if (ImGui::Button("Update"))
+				modelComponent.ModelPtr = ModelLibrary[buf2];
 			ImGui::EndGroup();
 		}
 		if (m_SelectionContext.HasComponent<Lib::LightComponent>())
@@ -146,6 +133,12 @@ void SceneLayer::OnImGuiRender()
 					m_SelectionContext.AddComponent<Lib::LightComponent>();
 				ImGui::CloseCurrentPopup();
 			}
+			if (ImGui::MenuItem("Model"))
+			{
+				if (!m_SelectionContext.HasComponent<Lib::ModelComponent>())
+					m_SelectionContext.AddComponent<Lib::ModelComponent>(ModelLibrary["res/models/cube.obj"]);
+				ImGui::CloseCurrentPopup();
+			}
 			ImGui::EndPopup();
 		}
 
@@ -171,13 +164,11 @@ void SceneLayer::OnImGuiRender()
 		auto modelpathinput = ImGui::InputText("ModelPath", buf3, IM_ARRAYSIZE(buf3));
 		if (ImGui::Button("Add"))
 		{
-			//std::string modelpath(buf3);
 			if (!ModelLibrary[buf3])
 			{
 				ModelLibrary[buf3] = Lib::Model::CreateModel(buf3);
 				ImGui::CloseCurrentPopup();
 			}
-			//tag.Tag = buf;
 		}
 		ImGui::EndGroup();
 		ImGui::EndPopup();
