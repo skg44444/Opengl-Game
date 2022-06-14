@@ -6,26 +6,7 @@ SceneLayer::SceneLayer()
 {
 	m_ActiveScene = std::make_shared<Lib::Scene>();
 
-	ModelLibrary["res/models/twocube.obj"] = Lib::Model::CreateModel("res/models/twocube.obj");
 	ModelLibrary["res/models/cube.obj"] = Lib::Model::CreateModel("res/models/cube.obj");
-
-	auto& modelentity = m_ActiveScene->CreateEntity("model");
-	modelentity.AddComponent<Lib::ModelComponent>(ModelLibrary["res/models/twocube.obj"]);
-	auto& transform = modelentity.GetComponents<Lib::TransformComponent>();
-	transform.Translation.z = -3.0f;
-	transform.Scale = glm::vec3(0.25f);
-	transform.Rotation = glm::vec3(0.0f);
-
-	auto& lightentity = m_ActiveScene->CreateEntity("light");
-	lightentity.AddComponent<Lib::ModelComponent>(ModelLibrary["res/models/cube.obj"]);
-	lightentity.AddComponent<Lib::LightComponent>();
-	auto& lightTransform = lightentity.GetComponents<Lib::TransformComponent>();
-	lightTransform.Translation = glm::vec3(-1.0f, 1.0f, -3.0f);
-	lightTransform.Scale = glm::vec3(0.1f);
-
-	auto& cameraentity = m_ActiveScene->CreateEntity("camera");
-	cameraentity.AddComponent<Lib::CameraComponent>();
-	auto& cameratransform = cameraentity.GetComponents<Lib::TransformComponent>();
 }
 
 SceneLayer::~SceneLayer()
@@ -86,9 +67,9 @@ void SceneLayer::OnImGuiRender()
 			auto& transform = m_SelectionContext.GetComponents<Lib::TransformComponent>();
 
 			ImGui::Text("Transformation");
-			ImGui::SliderFloat3("Translation", &transform.Translation.x, -10.0f, 10.0f);
-			ImGui::SliderFloat3("Rotation", &transform.Rotation.x, -10.0f, 10.0f);
-			ImGui::SliderFloat3("Scale", &transform.Scale.x, 0.0f, 2.0f);
+			ImGui::InputFloat3("Translation", &transform.Translation.x);
+			ImGui::InputFloat3("Rotation", &transform.Rotation.x);
+			ImGui::InputFloat3("Scale", &transform.Scale.x);
 		}
 		if (m_SelectionContext.HasComponent<Lib::ModelComponent>())
 		{
