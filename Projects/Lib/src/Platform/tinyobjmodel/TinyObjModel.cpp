@@ -78,7 +78,8 @@ namespace Lib
 
 	TinyObjModel::~TinyObjModel()
 	{
-		std::cout << "Deleting Model" << std::endl;
+		std::string base_filename = m_Path.substr(m_Path.find_last_of("/") + 1);
+		std::cout << "Deleting " << base_filename << std::endl;
 	}
 
 	void TinyObjModel::Draw() const
@@ -100,7 +101,7 @@ namespace Lib
 
 	OpenGlMesh::~OpenGlMesh()
 	{
-		std::cout << "Deleting Mesh" << std::endl;
+		//std::cout << "Deleting Mesh" << std::endl;
 	}
 
 	void OpenGlMesh::Draw() const
