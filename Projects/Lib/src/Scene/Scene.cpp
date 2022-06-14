@@ -70,7 +70,7 @@ namespace Lib
 				}
 			}
 		}
-		glm::vec3 LightPos;
+		glm::vec3 LightPos = glm::vec3(NULL);
 		{
 			auto view = m_Registry.view<TransformComponent, LightComponent>();
 

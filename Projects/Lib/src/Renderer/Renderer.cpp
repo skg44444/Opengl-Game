@@ -24,8 +24,16 @@ namespace Lib
 	void Renderer3D::BeginScene(const Camera& camera, const glm::mat4& cameraView, glm::vec3 lightPos)
 	{
 		s_SceneData.m_LightShader->Bind();
-		s_SceneData.m_LightShader->SetVec3("lightColor", glm::vec3(1.0f));
-		s_SceneData.m_LightShader->SetVec3("lightPos", lightPos);
+		if (lightPos.x == NULL)
+		{
+			s_SceneData.m_LightShader->SetVec3("lightColor", glm::vec3(0.0f));
+			s_SceneData.m_LightShader->SetVec3("lightPos", glm::vec3(0.0f));
+		}
+		else
+		{
+			s_SceneData.m_LightShader->SetVec3("lightColor", glm::vec3(1.0f));
+			s_SceneData.m_LightShader->SetVec3("lightPos", lightPos);
+		}
 		s_SceneData.m_LightShader->SetMat4("proj", camera.GetProjection());
 		s_SceneData.m_LightShader->SetMat4("view", cameraView);
 
