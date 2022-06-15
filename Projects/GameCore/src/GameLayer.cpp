@@ -12,7 +12,7 @@ GameLayer::GameLayer()
 
 	m_ActiveScene = std::make_shared<Lib::Scene>();
 
-	auto& modelentity = m_ActiveScene->CreateEntity("model");
+	auto& modelentity = m_ActiveScene->CreateEntity(0, "model");
 	modelentity.AddComponent<Lib::ModelComponent>(model);
 
 	cubeTransform.Translation = glm::vec3(-1.0f, 1.0f, -3.0f);

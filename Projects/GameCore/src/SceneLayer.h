@@ -1,7 +1,7 @@
 #pragma once
 #include "Core/ApplicationLayer.h"
 
-#include <Scene/Entity.h>
+#include "Scene/SceneSerializer.h"
 #include "Renderer/Shader.h"
 #include "Scene/Components.h"
 
@@ -16,5 +16,5 @@ public:
 private:
 	std::shared_ptr<Lib::Scene> m_ActiveScene;
 	Lib::Entity m_SelectionContext;
-	std::unordered_map <std::string, std::shared_ptr<Lib::Model>> ModelLibrary;
+	std::string currentscenepath = "";
 };

@@ -10,6 +10,10 @@ namespace Lib
 		{
 			m_ID = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 		}
+		UUID(uint64_t id)
+		{
+			m_ID = id;
+		}
 		~UUID()
 		{
 

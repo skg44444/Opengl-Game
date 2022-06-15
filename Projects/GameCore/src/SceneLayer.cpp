@@ -1,12 +1,14 @@
 #include "SceneLayer.h"
 #include <iostream>
 #include <imgui.h>
+#include <filesystem>
 
 SceneLayer::SceneLayer()
 {
 	m_ActiveScene = std::make_shared<Lib::Scene>();
-
-	ModelLibrary["res/models/cube.obj"] = Lib::Model::CreateModel("res/models/cube.obj");
+	m_ActiveScene->AddNewModel("res/models/cube.obj");
+	//auto& serializer = Lib::SceneSerializer(m_ActiveScene);
+	//serializer.DeSerialize("res/scenes/testscene.json");
 }
 
 SceneLayer::~SceneLayer()
@@ -23,7 +25,7 @@ void SceneLayer::OnImGuiRender()
 {
 	ImGui::Begin("Entities");
 	if (ImGui::Button("New Entity"))
-		auto& modelentity = m_ActiveScene->CreateEntity("New Empty Entity");
+		auto& modelentity = m_ActiveScene->CreateEntity(0, "New Empty Entity");
 	for (auto uuid : m_ActiveScene->GetEntityUUIds())
 	{
 		auto& entity = m_ActiveScene->GetEntityByUUID(uuid);
@@ -81,7 +83,10 @@ void SceneLayer::OnImGuiRender()
 			auto modelpathinput = ImGui::InputText("ModelPath", buf2, IM_ARRAYSIZE(buf2));
 
 			if (ImGui::Button("Update"))
-				modelComponent.ModelPtr = ModelLibrary[buf2];
+			{
+				modelComponent.ModelPtr = m_ActiveScene->GetModelFromModelLibrary(buf2);
+				modelComponent.m_Path = buf2;
+			}
 			ImGui::EndGroup();
 		}
 		if (m_SelectionContext.HasComponent<Lib::LightComponent>())
@@ -117,7 +122,7 @@ void SceneLayer::OnImGuiRender()
 			if (ImGui::MenuItem("Model"))
 			{
 				if (!m_SelectionContext.HasComponent<Lib::ModelComponent>())
-					m_SelectionContext.AddComponent<Lib::ModelComponent>(ModelLibrary["res/models/cube.obj"]);
+					m_SelectionContext.AddComponent<Lib::ModelComponent>(m_ActiveScene->GetModelFromModelLibrary("res/models/cube.obj"));
 				ImGui::CloseCurrentPopup();
 			}
 			ImGui::EndPopup();
@@ -145,9 +150,9 @@ void SceneLayer::OnImGuiRender()
 		auto modelpathinput = ImGui::InputText("ModelPath", buf3, IM_ARRAYSIZE(buf3));
 		if (ImGui::Button("Add"))
 		{
-			if (!ModelLibrary[buf3])
+			if (!m_ActiveScene->GetModelFromModelLibrary(buf3))
 			{
-				ModelLibrary[buf3] = Lib::Model::CreateModel(buf3);
+				m_ActiveScene->AddNewModel(buf3);
 				ImGui::CloseCurrentPopup();
 			}
 		}
@@ -155,9 +160,67 @@ void SceneLayer::OnImGuiRender()
 		ImGui::EndPopup();
 	}
 	ImGui::PopItemWidth();
-	for (auto& [key, value] : ModelLibrary)
+	for (auto& it = m_ActiveScene->begin(); it != m_ActiveScene->end(); ++it)
 	{
-		ImGui::Text(key.c_str());
+		ImGui::Text(it->first.c_str());
+	}
+	ImGui::End();
+
+	ImGui::Begin("Save");
+	if (currentscenepath!= "")
+	{
+		std::string displaytext = "FileName :" + currentscenepath;
+		ImGui::Text(displaytext.c_str());
+	}
+	if (ImGui::Button("Save"))
+	{
+		auto& serializer = Lib::SceneSerializer(m_ActiveScene);
+		serializer.Serialize(currentscenepath);
+	}
+	if (ImGui::Button("Save As"))
+		ImGui::OpenPopup("SaveAs");
+	
+	if (ImGui::BeginPopup("SaveAs"))
+	{
+		ImGui::BeginGroup();
+		static char filepathbuf[512];
+		auto filepathinput = ImGui::InputText("FilePath", filepathbuf, IM_ARRAYSIZE(filepathbuf));
+
+		if (ImGui::Button("OK"))
+		{
+			auto& serializer = Lib::SceneSerializer(m_ActiveScene);
+			serializer.Serialize(filepathbuf);
+			currentscenepath = filepathbuf;
+			ImGui::CloseCurrentPopup();
+		}
+		ImGui::EndGroup();
+		ImGui::EndPopup();
+	}
+	
+	if (ImGui::Button("Open"))
+		ImGui::OpenPopup("Open");
+
+	if (ImGui::BeginPopup("Open"))
+	{
+		ImGui::BeginGroup();
+		static char filepathbuf2[512];
+		auto filepathinput = ImGui::InputText("FilePath", filepathbuf2, IM_ARRAYSIZE(filepathbuf2));
+
+		if (ImGui::Button("Open File"))
+		{
+			auto newScene = std::make_shared<Lib::Scene>();
+			auto& serializer = Lib::SceneSerializer(newScene);
+			if (std::filesystem::exists(filepathbuf2))
+			{
+				serializer.DeSerialize(filepathbuf2);
+				currentscenepath = filepathbuf2;
+
+				m_ActiveScene = newScene;
+			}
+			ImGui::CloseCurrentPopup();
+		}
+		ImGui::EndGroup();
+		ImGui::EndPopup();
 	}
 	ImGui::End();
 }

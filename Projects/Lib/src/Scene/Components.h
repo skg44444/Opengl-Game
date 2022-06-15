@@ -9,12 +9,16 @@ namespace Lib
 	struct TagComponent
 	{
 		std::string Tag;
-		UUID uuid = UUID();
+		UUID uuid;
 
 		TagComponent() = default;
 		TagComponent(const TagComponent&) = default;
 		TagComponent(const std::string & tag)
-			: Tag(tag) {}
+			: Tag(tag), uuid(UUID()) {}
+
+		TagComponent(const std::string& tag, uint64_t id)
+			: Tag(tag), uuid(id)
+		{}
 	};
 
 	struct TransformComponent

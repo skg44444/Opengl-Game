@@ -14,11 +14,14 @@ namespace Lib
 
 	}
 
-	Entity Scene::CreateEntity(const std::string& name)
+	Entity Scene::CreateEntity(uint64_t id, const std::string& name)
 	{
 		Entity entity = { m_Registry.create(), this };
 		entity.AddComponent<TransformComponent>();
-		entity.AddComponent<TagComponent>(name);
+		if (id == 0)
+			entity.AddComponent<TagComponent>(name);
+		else
+			entity.AddComponent<TagComponent>(name, id);
 		return entity;
 	}
 	void Scene::DestroyEntity(Entity entity)
@@ -122,6 +125,20 @@ namespace Lib
 			listOfEntities.push_back(view.get<TagComponent>(entity).uuid);
 
 		return listOfEntities;
+	}
+
+	void Scene::AddNewModel(const std::string& modelpath)
+	{
+		if(!ModelLibrary[modelpath])
+			ModelLibrary[modelpath] = Model::CreateModel(modelpath);
+	}
+
+	std::shared_ptr<Lib::Model> Scene::GetModelFromModelLibrary(const std::string& modelpath)
+	{
+		if (ModelLibrary[modelpath])
+			return ModelLibrary[modelpath];
+		else
+			return false;
 	}
 
 	template<typename T>
