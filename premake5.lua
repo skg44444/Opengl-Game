@@ -96,7 +96,8 @@ project "Lib"
 		"Projects/Lib/src",
 		"Projects/Lib/vendor",
 		"Libraries/glm",
-		"Libraries/tinyobjloader"
+		"Libraries/tinyobjloader",
+		"Libraries/json"
 	}
 
     defines
