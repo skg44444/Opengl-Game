@@ -9,9 +9,10 @@ namespace Lib
 	{
 		glm::vec3 Position;
 		glm::vec3 Normals;
+		glm::vec2 TexCoords;
 
 		bool operator==(const Vertex& other) const {
-			return Position == other.Position && Normals == other.Normals;
+			return Position == other.Position && Normals == other.Normals && TexCoords==other.TexCoords;
 		}
 	};
 

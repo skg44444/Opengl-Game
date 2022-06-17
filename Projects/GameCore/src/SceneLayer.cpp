@@ -2,6 +2,7 @@
 #include <iostream>
 #include <imgui.h>
 #include <filesystem>
+#include <string>
 
 SceneLayer::SceneLayer()
 {
@@ -57,6 +58,7 @@ void SceneLayer::OnImGuiRender()
 			ImGui::BeginGroup();
 			ImGui::Text("Tag");
 			static char buf[256];
+			//strncpy_s(buf, tag.Tag.c_str(), 256);
 			auto modified = ImGui::InputText("##Tag", buf, IM_ARRAYSIZE(buf));
 			
 			if(ImGui::Button("Modify"))
@@ -79,7 +81,7 @@ void SceneLayer::OnImGuiRender()
 			ImGui::BeginGroup();
 			ImGui::Text("ModelPath");
 			static char buf2[256];
-
+			//strncpy_s(buf2, modelComponent.m_Path.c_str(), 256);
 			auto modelpathinput = ImGui::InputText("ModelPath", buf2, IM_ARRAYSIZE(buf2));
 
 			if (ImGui::Button("Update"))
@@ -101,6 +103,24 @@ void SceneLayer::OnImGuiRender()
 			auto& currentCameraPtr = m_SelectionContext.GetComponents<Lib::CameraComponent>();
 			ImGui::Text("Camera");
 			ImGui::Checkbox("Current Camera", &currentCameraPtr.current);
+		}
+		if (m_SelectionContext.HasComponent<Lib::TextureComponent>())
+		{
+			auto& textureComponent = m_SelectionContext.GetComponents<Lib::TextureComponent>();
+			ImGui::BeginGroup();
+			ImGui::Text("TexturePath");
+			static char texbuf2[256];
+			//strncpy_s(texbuf2, textureComponent.m_Path.c_str(), 256);
+
+			auto modelpathinput = ImGui::InputText("TexturePath", texbuf2, IM_ARRAYSIZE(texbuf2));
+
+			if (ImGui::Button("UpdateTexture"))
+			{
+				textureComponent.m_Path = texbuf2;
+				if (!m_ActiveScene->GetTextureFromTextureLibrary(texbuf2))
+					m_ActiveScene->AddNewTexture(texbuf2);
+			}
+			ImGui::EndGroup();
 		}
 		
 		if (ImGui::Button("Add Component"))
@@ -125,6 +145,11 @@ void SceneLayer::OnImGuiRender()
 					m_SelectionContext.AddComponent<Lib::ModelComponent>(m_ActiveScene->GetModelFromModelLibrary("res/models/cube.obj"));
 				ImGui::CloseCurrentPopup();
 			}
+			if (ImGui::MenuItem("Texture"))
+			{
+				if (!m_SelectionContext.HasComponent<Lib::TextureComponent>())
+					m_SelectionContext.AddComponent<Lib::TextureComponent>("");
+			}
 			ImGui::EndPopup();
 		}
 
@@ -144,10 +169,10 @@ void SceneLayer::OnImGuiRender()
 	if (ImGui::BeginPopup("AddModel"))
 	{
 		ImGui::BeginGroup();
-		ImGui::Text("ModelPath");
+		ImGui::Text("LoadModelPath");
 		static char buf3[256];
 
-		auto modelpathinput = ImGui::InputText("ModelPath", buf3, IM_ARRAYSIZE(buf3));
+		auto modelpathinput = ImGui::InputText("LoadModelPath", buf3, IM_ARRAYSIZE(buf3));
 		if (ImGui::Button("Add"))
 		{
 			if (!m_ActiveScene->GetModelFromModelLibrary(buf3))
@@ -204,7 +229,7 @@ void SceneLayer::OnImGuiRender()
 	{
 		ImGui::BeginGroup();
 		static char filepathbuf2[512];
-		auto filepathinput = ImGui::InputText("FilePath", filepathbuf2, IM_ARRAYSIZE(filepathbuf2));
+		auto filepathinput = ImGui::InputText("OpenFilePath", filepathbuf2, IM_ARRAYSIZE(filepathbuf2));
 
 		if (ImGui::Button("Open File"))
 		{
@@ -222,5 +247,10 @@ void SceneLayer::OnImGuiRender()
 		ImGui::EndGroup();
 		ImGui::EndPopup();
 	}
+	ImGui::End();
+
+	ImGui::Begin("Stats");
+	std::string s = "RenderPass : " + std::to_string(m_ActiveScene->GetRenderCount());
+	ImGui::Text(s.c_str());
 	ImGui::End();
 }

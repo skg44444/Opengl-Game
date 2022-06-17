@@ -72,6 +72,19 @@ namespace Lib
 		}
 	};
 
+	struct TextureComponent
+	{
+		std::string m_Path;
+
+		TextureComponent() = default;
+		TextureComponent(const TextureComponent&) = default;
+		TextureComponent(const std::string& path)
+			:m_Path(path)
+		{
+
+		};
+	};
+
 	struct LightComponent
 	{
 		glm::vec3 Color = glm::vec3(1.0f);

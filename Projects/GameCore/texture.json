@@ -1,0 +1,110 @@
+{
+    "Entities": [
+        {
+            "Model": {
+                "Path": "res/models/cube.obj"
+            },
+            "name": "Cube2",
+            "transform": {
+                "rotation": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 0.20000000298023224,
+                    "y": 0.20000000298023224,
+                    "z": 0.20000000298023224
+                },
+                "translation": {
+                    "x": 0.5,
+                    "y": 0.5,
+                    "z": -3.0
+                }
+            },
+            "uuid": 1655387576281846
+        },
+        {
+            "Light": {
+                "color": {
+                    "b": 1.0,
+                    "g": 1.0,
+                    "r": 1.0
+                }
+            },
+            "name": "Light",
+            "transform": {
+                "rotation": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "translation": {
+                    "x": -100.0,
+                    "y": 100.0,
+                    "z": -3.0
+                }
+            },
+            "uuid": 1655382647951120
+        },
+        {
+            "Model": {
+                "Path": "res/models/cube.obj"
+            },
+            "Texture": {
+                "Path": "res/models/house-RGBA.png"
+            },
+            "name": "Cube",
+            "transform": {
+                "rotation": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 0.25,
+                    "y": 0.25,
+                    "z": 0.25
+                },
+                "translation": {
+                    "x": 0.5,
+                    "y": -0.5,
+                    "z": -3.0
+                }
+            },
+            "uuid": 1655382582504158
+        },
+        {
+            "Camera": {
+                "Current": true
+            },
+            "name": "Camera",
+            "transform": {
+                "rotation": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "translation": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "uuid": 1655382572505482
+        }
+    ],
+    "Models": [
+        "res/models/cube.obj"
+    ]
+}

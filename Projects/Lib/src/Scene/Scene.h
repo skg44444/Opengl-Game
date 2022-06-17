@@ -3,6 +3,7 @@
 #include <entt.hpp>
 
 #include "Renderer/Model.h"
+#include "Renderer/Texture.h"
 
 namespace Lib
 {
@@ -27,6 +28,11 @@ namespace Lib
 		std::shared_ptr<Lib::Model> GetModelFromModelLibrary(const std::string& modelpath);
 		std::unordered_map <std::string, std::shared_ptr<Lib::Model>>::iterator begin() { return ModelLibrary.begin(); }
 		std::unordered_map <std::string, std::shared_ptr<Lib::Model>>::iterator end() { return ModelLibrary.end(); }
+
+		void AddNewTexture(const std::string& texturepath);
+		std::shared_ptr<Lib::Texture> GetTextureFromTextureLibrary(const std::string& texturepath);
+
+		uint32_t GetRenderCount() { return renderpass; }
 	private:
 		template<typename T>
 		void OnComponentAdded(Entity entity, T& component);
@@ -35,5 +41,7 @@ namespace Lib
 		entt::registry m_Registry;
 		friend class Entity;
 		std::unordered_map <std::string, std::shared_ptr<Lib::Model>> ModelLibrary;
+		std::unordered_map < std::string, std::shared_ptr<Lib::Texture>> TextureLibrary;
+		uint32_t renderpass;
 	};
 }

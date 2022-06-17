@@ -6,7 +6,7 @@ namespace Lib
 {
 	enum class RenderMode
 	{
-		NONE = 0, MODEL, LIGHT
+		NONE = 0, MODEL, LIGHT, TEXTURE
 	};
 
 	class Renderer3D

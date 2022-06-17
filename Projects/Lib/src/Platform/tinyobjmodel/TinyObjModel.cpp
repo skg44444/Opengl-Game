@@ -11,7 +11,9 @@
 namespace std {
 	template<> struct hash<Lib::Vertex> {
 		size_t operator()(Lib::Vertex const& vertex) const {
-			return ((hash<glm::vec3>()(vertex.Position)));
+			return ((hash<glm::vec3>()(vertex.Position) ^
+				(hash<glm::vec3>()(vertex.Normals) << 1)) >> 1) ^
+				(hash<glm::vec2>()(vertex.TexCoords) << 1);
 		}
 	};
 }
@@ -63,6 +65,11 @@ namespace Lib
 					attrib.normals[3 * index.normal_index + 2]
 				};
 
+				vertex.TexCoords = {
+					attrib.texcoords[2 * index.texcoord_index + 0],
+					attrib.texcoords[2 * index.texcoord_index + 1]
+				};
+
 				if (uniqueVertices.count(vertex) == 0) {
 					uniqueVertices[vertex] = static_cast<uint32_t>(vertices.size());
 					vertices.push_back(vertex);
@@ -71,7 +78,6 @@ namespace Lib
 				indices.push_back(uniqueVertices[vertex]);
 			}
 
-			//m_Meshes.push_back(Mesh::CreateMesh(vertices, indices));
 			m_Meshes.push_back(std::make_shared<OpenGlMesh>(vertices, indices));
 		}
 	}

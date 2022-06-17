@@ -5,7 +5,6 @@
 #include "Components.h"
 
 using json = nlohmann::json;
-
 namespace Lib
 {
 	static json SerializeEntity(Entity& entity)
@@ -41,6 +40,11 @@ namespace Lib
 		if (entity.HasComponent<ModelComponent>())
 		{
 			entitydata["Model"]["Path"] = entity.GetComponents<ModelComponent>().m_Path;
+		}
+
+		if (entity.HasComponent<TextureComponent>())
+		{
+			entitydata["Texture"]["Path"] = entity.GetComponents<TextureComponent>().m_Path;
 		}
 		return entitydata;
 	}
@@ -135,6 +139,13 @@ namespace Lib
 				if (entitydata["Model"].is_object())
 				{
 					auto& modelComponent = entity.AddComponent<ModelComponent>(m_Scene->GetModelFromModelLibrary(entitydata["Model"]["Path"]));
+				}
+
+				if (entitydata["Texture"].is_object())
+				{
+					auto& textureComponent = entity.AddComponent<TextureComponent>(entitydata["Texture"]["Path"]);
+					if (!m_Scene->GetTextureFromTextureLibrary(entitydata["Texture"]["Path"]))
+						m_Scene->AddNewTexture(entitydata["Texture"]["Path"]);
 				}
 			}
 		}

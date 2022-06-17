@@ -8,8 +8,6 @@ namespace Lib
 		static std::shared_ptr<VertexBuffer> CreateVertexBuffer(const void* vertices, uint32_t size);
 		virtual ~VertexBuffer() = default;
 
-		//virtual void SetVertexBufferLayout() = 0;
-
 		virtual void Bind() = 0;
 		virtual void UnBind() = 0;
 	};
