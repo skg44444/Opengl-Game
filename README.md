@@ -14,6 +14,14 @@ Functionalities avialable in app:
 * Destroy entity
 * Update components details on runtime. 
 
+In Development:
+
+* Event System
+* Scripting
+* Multiple Lighting
+* Terrain Generation
+...
+
 
 Current Status of Application
 

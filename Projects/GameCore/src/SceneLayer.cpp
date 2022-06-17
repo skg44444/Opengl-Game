@@ -79,7 +79,8 @@ void SceneLayer::OnImGuiRender()
 		{
 			auto& modelComponent = m_SelectionContext.GetComponents<Lib::ModelComponent>();
 			ImGui::BeginGroup();
-			ImGui::Text("ModelPath");
+			std::string mp = "ModelPath : " + modelComponent.m_Path;
+			ImGui::Text(mp.c_str());
 			static char buf2[256];
 			//strncpy_s(buf2, modelComponent.m_Path.c_str(), 256);
 			auto modelpathinput = ImGui::InputText("ModelPath", buf2, IM_ARRAYSIZE(buf2));
@@ -108,7 +109,8 @@ void SceneLayer::OnImGuiRender()
 		{
 			auto& textureComponent = m_SelectionContext.GetComponents<Lib::TextureComponent>();
 			ImGui::BeginGroup();
-			ImGui::Text("TexturePath");
+			std::string tp = "TexturePath : " + textureComponent.m_Path;
+			ImGui::Text(tp.c_str());
 			static char texbuf2[256];
 			//strncpy_s(texbuf2, textureComponent.m_Path.c_str(), 256);
 
@@ -241,6 +243,7 @@ void SceneLayer::OnImGuiRender()
 				currentscenepath = filepathbuf2;
 
 				m_ActiveScene = newScene;
+				m_SelectionContext = {};
 			}
 			ImGui::CloseCurrentPopup();
 		}
