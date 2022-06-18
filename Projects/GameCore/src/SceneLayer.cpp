@@ -114,7 +114,7 @@ void SceneLayer::OnImGuiRender()
 			static char texbuf2[256];
 			//strncpy_s(texbuf2, textureComponent.m_Path.c_str(), 256);
 
-			auto modelpathinput = ImGui::InputText("TexturePath", texbuf2, IM_ARRAYSIZE(texbuf2));
+			auto texturepathinput = ImGui::InputText("TexturePath", texbuf2, IM_ARRAYSIZE(texbuf2));
 
 			if (ImGui::Button("UpdateTexture"))
 			{
@@ -124,7 +124,23 @@ void SceneLayer::OnImGuiRender()
 			}
 			ImGui::EndGroup();
 		}
-		
+		if (m_SelectionContext.HasComponent<Lib::ScriptComponent>())
+		{
+			auto& scriptComponent = m_SelectionContext.GetComponents<Lib::ScriptComponent>();
+			ImGui::BeginGroup();
+			std::string sp = "ScriptPath : " + scriptComponent.m_Path;
+			ImGui::Text(sp.c_str());
+			static char scriptbuf2[256];
+
+			auto scriptpathinput = ImGui::InputText("ScriptPath", scriptbuf2, IM_ARRAYSIZE(scriptbuf2));
+
+			if (ImGui::Button("UpdateScript"))
+			{
+				scriptComponent.m_Path = scriptbuf2;
+			}
+			ImGui::EndGroup();
+		}
+
 		if (ImGui::Button("Add Component"))
 			ImGui::OpenPopup("AddComponent");
 		if (ImGui::BeginPopup("AddComponent"))
@@ -151,6 +167,11 @@ void SceneLayer::OnImGuiRender()
 			{
 				if (!m_SelectionContext.HasComponent<Lib::TextureComponent>())
 					m_SelectionContext.AddComponent<Lib::TextureComponent>("");
+			}
+			if (ImGui::MenuItem("Script"))
+			{
+				if (!m_SelectionContext.HasComponent<Lib::ScriptComponent>())
+					m_SelectionContext.AddComponent<Lib::ScriptComponent>("");
 			}
 			ImGui::EndPopup();
 		}

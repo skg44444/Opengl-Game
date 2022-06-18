@@ -27,6 +27,10 @@ function includeGLFW()
 	includedirs "Libraries/GLFW/Include"
 end
 
+function includeLua()
+	includedirs "Libraries/Lua/include"
+end
+
 function includeglm()
 	includedirs "Libraries/glm"
 end
@@ -42,6 +46,14 @@ function linkGLFW()
 	-- Our static lib should not link against GLFW
 	filter "kind:not StaticLib"
 		links "glfw3"
+	filter {}
+end
+
+function linkLua()
+	libdirs "Libraries/Lua"
+
+	filter "kind:not StaticLib"
+		links "lua54"
 	filter {}
 end
 
@@ -107,6 +119,7 @@ project "Lib"
 	}
 
 	includeGLFW()
+	includeLua()
     includeGlad()
 	includeentt()
 
@@ -126,6 +139,7 @@ function useLib()
 	links "Lib"
 
 	linkGLFW()
+	linkLua()
     linkGlad()
 end
 

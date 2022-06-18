@@ -1,17 +1,55 @@
 #include "libpch.h"
-#include "Scene.h"
-#include "Entity.h"
 #include "Renderer/Renderer.h"
+#include "Utils/LuaWrappers.h"
+
 namespace Lib
 {
-	Scene::Scene()
-	{
 
+	static bool checkLua(lua_State* L, int r)
+	{
+		if (r != LUA_OK)
+		{
+			std::string errormsg = lua_tostring(L, -1);
+			std::cout << errormsg << std::endl;
+			return false;
+		}
+		return true;
+	}
+
+    bool Scene::executeLuaFile(const std::string& filepath, LuaWrappers* wrapperObject)
+	{
+		if (checkLua(L, luaL_dofile(L, filepath.c_str())))
+		{
+			lua_getglobal(L, "Execute");
+			if (lua_isfunction(L, -1))
+			{
+				lua_pushlightuserdata(L, wrapperObject);
+				if (checkLua(L, lua_pcall(L, 1, 0, 0)))
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	Scene::Scene()
+		:renderpass(0), m_AspectRatio(1)
+	{
+		m_ScriptWrapper = new LuaWrappers();
+		L = luaL_newstate();
+		luaL_openlibs(L);
+
+		lua_register(L, "_Sum", m_ScriptWrapper->wrap_Sum);
+		lua_register(L, "_Move", m_ScriptWrapper->wrap_Move);
+
+		//executeLuaFile("filename.lua");
 	}
 
 	Scene::~Scene()
 	{
-
+		lua_close(L);
+		delete m_ScriptWrapper;
 	}
 
 	Entity Scene::CreateEntity(uint64_t id, const std::string& name)
@@ -40,6 +78,8 @@ namespace Lib
 				return Entity{ entity, this };
 			}
 		}
+
+		return {};
 	}
 
 	Entity Scene::GetEntityByUUID(const uint64_t uuid)
@@ -53,6 +93,8 @@ namespace Lib
 				return Entity{ entity, this };
 			}
 		}
+
+		return {};
 	}
 
 	void Scene::OnUpdate(float dt)
@@ -103,6 +145,18 @@ namespace Lib
 		//	}
 		//}
 		renderpass = 0;
+		auto scriptgroup = m_Registry.group<ScriptComponent>(entt::get<TagComponent>);
+		for (auto entity:scriptgroup) 
+		{
+			auto [script, tag] = scriptgroup.get<ScriptComponent, TagComponent>(entity);
+
+			m_ScriptWrapper->SetEntity(GetEntityByUUID(tag.uuid));
+
+			if (script.m_Path != "")
+				if (!executeLuaFile(script.m_Path, m_ScriptWrapper))
+					std::cout << "ERROR" << std::endl;
+		}
+
 		auto lightgroup = m_Registry.group<LightComponent>(entt::get<ModelComponent, TransformComponent>);
 		for (auto entity : lightgroup)
 		{
@@ -230,6 +284,11 @@ namespace Lib
 
 	template<>
 	void Scene::OnComponentAdded(Entity entity, TextureComponent& component)
+	{
+	}
+
+	template<>
+	void Scene::OnComponentAdded(Entity entity, ScriptComponent& component)
 	{
 	}
 }

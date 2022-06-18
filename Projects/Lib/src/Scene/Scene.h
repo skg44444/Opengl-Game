@@ -5,9 +5,12 @@
 #include "Renderer/Model.h"
 #include "Renderer/Texture.h"
 
+struct lua_State;
+
 namespace Lib
 {
 	class Entity;
+	class LuaWrappers;
 
 	class Scene
 	{
@@ -36,12 +39,21 @@ namespace Lib
 	private:
 		template<typename T>
 		void OnComponentAdded(Entity entity, T& component);
+
+		bool executeLuaFile(const std::string& filepath, LuaWrappers* wrapperObject);
 	private:
 		float m_AspectRatio;
+		
 		entt::registry m_Registry;
 		friend class Entity;
+
 		std::unordered_map <std::string, std::shared_ptr<Lib::Model>> ModelLibrary;
 		std::unordered_map < std::string, std::shared_ptr<Lib::Texture>> TextureLibrary;
+		
 		uint32_t renderpass;
+
+		lua_State* L;
+
+		LuaWrappers* m_ScriptWrapper;
 	};
 }

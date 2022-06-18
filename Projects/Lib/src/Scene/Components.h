@@ -94,4 +94,17 @@ namespace Lib
 		LightComponent(const glm::vec3 & color)
 			: Color(color) {}
 	};
+
+	struct ScriptComponent
+	{
+		std::string m_Path;
+
+		ScriptComponent() = default;
+		ScriptComponent(const ScriptComponent&) = default;
+		ScriptComponent(const std::string & path)
+			:m_Path(path)
+		{
+
+		};
+	};
 }
