@@ -12,7 +12,7 @@ public:
 	~GameLayer();
 
 	void OnUpdate(float dt, float AspectRatio) override;
-	void OnImGuiRender() override {};
+	void OnImGuiRender(float dt) override {};
 private:
 	std::shared_ptr<Lib::Shader> shader;
 	std::shared_ptr<Lib::Shader> lightShader;
