@@ -9,6 +9,6 @@ namespace Lib
 		virtual ~ApplicationLayer() = default;
 
 		virtual void OnUpdate(float dt, float AspectRatio) = 0;
-		virtual void OnImGuiRender() {};
+		virtual void OnImGuiRender(float dt) {};
 	};
 }

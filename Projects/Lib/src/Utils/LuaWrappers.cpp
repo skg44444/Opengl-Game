@@ -35,7 +35,6 @@ namespace Lib
 		t.x += vx;
 		t.y += vy;
 		t.z += vz;
-		std::cout << "Translating by :" << vx << std::endl;
 	}
 
 }

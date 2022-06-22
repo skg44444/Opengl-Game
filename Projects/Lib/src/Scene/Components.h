@@ -6,6 +6,11 @@
 
 namespace Lib
 {
+	enum class LightMode
+	{
+		NONE = 0, DIR, POINT
+	};
+
 	struct TagComponent
 	{
 		std::string Tag;
@@ -87,12 +92,19 @@ namespace Lib
 
 	struct LightComponent
 	{
-		glm::vec3 Color = glm::vec3(1.0f);
+		LightMode mode = LightMode::NONE;
+		float constant = 1.0f;
+		float linear = 0.0f;
+		float quadratic = 0.0f;
+
+		float ambient = 0.0f;
+		glm::vec3 diffuse = glm::vec3(1.0f);
+		float specular = 10;
 
 		LightComponent() = default;
 		LightComponent(const LightComponent&) = default;
 		LightComponent(const glm::vec3 & color)
-			: Color(color) {}
+			: diffuse(color) {}
 	};
 
 	struct ScriptComponent

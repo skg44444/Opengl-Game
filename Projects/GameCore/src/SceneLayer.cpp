@@ -22,7 +22,7 @@ void SceneLayer::OnUpdate(float dt, float AspectRatio)
 	m_ActiveScene->OnUpdate(dt);
 }
 
-void SceneLayer::OnImGuiRender()
+void SceneLayer::OnImGuiRender(float dt)
 {
 	ImGui::Begin("Entities");
 	if (ImGui::Button("New Entity"))
@@ -60,7 +60,7 @@ void SceneLayer::OnImGuiRender()
 			static char buf[256];
 			//strncpy_s(buf, tag.Tag.c_str(), 256);
 			auto modified = ImGui::InputText("##Tag", buf, IM_ARRAYSIZE(buf));
-			
+			ImGui::SameLine();
 			if(ImGui::Button("Modify"))
 				tag.Tag = buf;
 			
@@ -83,8 +83,8 @@ void SceneLayer::OnImGuiRender()
 			ImGui::Text(mp.c_str());
 			static char buf2[256];
 			//strncpy_s(buf2, modelComponent.m_Path.c_str(), 256);
-			auto modelpathinput = ImGui::InputText("ModelPath", buf2, IM_ARRAYSIZE(buf2));
-
+			auto modelpathinput = ImGui::InputText("##ModelPath", buf2, IM_ARRAYSIZE(buf2));
+			ImGui::SameLine();
 			if (ImGui::Button("Update"))
 			{
 				modelComponent.ModelPtr = m_ActiveScene->GetModelFromModelLibrary(buf2);
@@ -97,7 +97,29 @@ void SceneLayer::OnImGuiRender()
 			auto& lightComponent = m_SelectionContext.GetComponents<Lib::LightComponent>();
 
 			ImGui::Text("Light");
-			ImGui::ColorEdit3("Color", &lightComponent.Color.x);
+			ImGui::Text("Light Mode : ");
+			ImGui::SameLine();
+			if (ImGui::Button("POINT"))
+				lightComponent.mode = Lib::LightMode::POINT;
+			ImGui::SameLine();
+			if (ImGui::Button("DIR"))
+			{
+				lightComponent.mode = Lib::LightMode::DIR;
+				lightComponent.constant = 1.0f;
+				lightComponent.linear = 0.0f;
+				lightComponent.quadratic = 0.0f;
+
+			}
+			ImGui::ColorEdit3("Color", &lightComponent.diffuse.x);
+			ImGui::InputFloat("Ambient", &lightComponent.ambient);
+			ImGui::InputFloat("Specular", &lightComponent.specular);
+			if (lightComponent.mode == Lib::LightMode::POINT)
+			{
+				ImGui::Text("Attentuation Parameters");
+				ImGui::InputFloat("Constant", &lightComponent.constant);
+				ImGui::InputFloat("Linear", &lightComponent.linear);
+				ImGui::InputFloat("Quadratic", &lightComponent.quadratic);
+			}
 		}
 		if (m_SelectionContext.HasComponent<Lib::CameraComponent>())
 		{
@@ -114,8 +136,8 @@ void SceneLayer::OnImGuiRender()
 			static char texbuf2[256];
 			//strncpy_s(texbuf2, textureComponent.m_Path.c_str(), 256);
 
-			auto texturepathinput = ImGui::InputText("TexturePath", texbuf2, IM_ARRAYSIZE(texbuf2));
-
+			auto texturepathinput = ImGui::InputText("##TexturePath", texbuf2, IM_ARRAYSIZE(texbuf2));
+			ImGui::SameLine();
 			if (ImGui::Button("UpdateTexture"))
 			{
 				textureComponent.m_Path = texbuf2;
@@ -132,8 +154,8 @@ void SceneLayer::OnImGuiRender()
 			ImGui::Text(sp.c_str());
 			static char scriptbuf2[256];
 
-			auto scriptpathinput = ImGui::InputText("ScriptPath", scriptbuf2, IM_ARRAYSIZE(scriptbuf2));
-
+			auto scriptpathinput = ImGui::InputText("##ScriptPath", scriptbuf2, IM_ARRAYSIZE(scriptbuf2));
+			ImGui::SameLine();
 			if (ImGui::Button("UpdateScript"))
 			{
 				scriptComponent.m_Path = scriptbuf2;
@@ -194,8 +216,8 @@ void SceneLayer::OnImGuiRender()
 		ImGui::BeginGroup();
 		ImGui::Text("LoadModelPath");
 		static char buf3[256];
-
-		auto modelpathinput = ImGui::InputText("LoadModelPath", buf3, IM_ARRAYSIZE(buf3));
+		ImGui::SameLine();
+		auto modelpathinput = ImGui::InputText("##LoadModelPath", buf3, IM_ARRAYSIZE(buf3));
 		if (ImGui::Button("Add"))
 		{
 			if (!m_ActiveScene->GetModelFromModelLibrary(buf3))
@@ -232,8 +254,8 @@ void SceneLayer::OnImGuiRender()
 	{
 		ImGui::BeginGroup();
 		static char filepathbuf[512];
-		auto filepathinput = ImGui::InputText("FilePath", filepathbuf, IM_ARRAYSIZE(filepathbuf));
-
+		auto filepathinput = ImGui::InputText("##FilePath", filepathbuf, IM_ARRAYSIZE(filepathbuf));
+		ImGui::SameLine();
 		if (ImGui::Button("OK"))
 		{
 			auto& serializer = Lib::SceneSerializer(m_ActiveScene);
@@ -252,8 +274,8 @@ void SceneLayer::OnImGuiRender()
 	{
 		ImGui::BeginGroup();
 		static char filepathbuf2[512];
-		auto filepathinput = ImGui::InputText("OpenFilePath", filepathbuf2, IM_ARRAYSIZE(filepathbuf2));
-
+		auto filepathinput = ImGui::InputText("##OpenFilePath", filepathbuf2, IM_ARRAYSIZE(filepathbuf2));
+		ImGui::SameLine();
 		if (ImGui::Button("Open File"))
 		{
 			auto newScene = std::make_shared<Lib::Scene>();
@@ -275,6 +297,8 @@ void SceneLayer::OnImGuiRender()
 
 	ImGui::Begin("Stats");
 	std::string s = "RenderPass : " + std::to_string(m_ActiveScene->GetRenderCount());
+	std::string fs = "FrameRate : " + std::to_string((float)1/dt);
 	ImGui::Text(s.c_str());
+	ImGui::Text(fs.c_str());
 	ImGui::End();
 }

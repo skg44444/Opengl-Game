@@ -115,35 +115,29 @@ namespace Lib
 				}
 			}
 		}
-		glm::vec3 LightPos = glm::vec3(NULL);
+		std::vector<LightData> lightDataArray;
 		{
 			auto view = m_Registry.view<TransformComponent, LightComponent>();
 
 			for (auto entity : view)
 			{
-				auto transform = view.get<TransformComponent>(entity);
-				LightPos = transform.Translation;
-				break;
+				LightData lightData;
+				auto [transform, light] = view.get<TransformComponent, LightComponent>(entity);
+				lightData.lightPos = transform.Translation;
+				lightData.lightColor = light.diffuse;
+				lightData.ambient = light.ambient;
+				lightData.specular = light.specular;
+				
+				lightData.constant = light.constant;
+				lightData.linear = light.linear;
+				lightData.quadratic = light.quadratic;
+
+				lightDataArray.push_back(lightData);
 			}
 		}
 		CurrentCamera.SetAspectRatio(m_AspectRatio);
-		Renderer3D::BeginScene(CurrentCamera, CameraView, LightPos);
-		//auto lightgroup = m_Registry.group<TransformComponent>(entt::get<ModelComponent, LightComponent>);
-		//for (auto entity : lightgroup)
-		//{
-		//	auto [transform, model, light] = lightgroup.get<TransformComponent, ModelComponent, LightComponent>(entity);
-		//	Renderer3D::Draw(model.ModelPtr, transform, RenderMode::LIGHT);
-		//}
-		//auto group = m_Registry.group<TransformComponent>(entt::get<ModelComponent>);
-		//for (auto entity : group)
-		//{
-		//	if (!m_Registry.any_of<LightComponent>(entity))
-		//	{
-		//		auto [transform, model] = group.get<TransformComponent, ModelComponent>(entity);
-		//		// execute render command
-		//		Renderer3D::Draw(model.ModelPtr, transform, RenderMode::MODEL);
-		//	}
-		//}
+		Renderer3D::BeginScene(CurrentCamera, CameraView, lightDataArray);
+		
 		renderpass = 0;
 		auto scriptgroup = m_Registry.group<ScriptComponent>(entt::get<TagComponent>);
 		for (auto entity:scriptgroup) 

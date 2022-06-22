@@ -17,8 +17,6 @@ namespace Lib
 
 	void GlWindow::OnInit()
 	{
-
-
 		glfwInit();
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
@@ -41,6 +39,10 @@ namespace Lib
 
 		glViewport(0, 0, m_Data.width, m_Data.height);
 		glEnable(GL_DEPTH_TEST);
+		glfwSwapInterval(0);
+		// Print GPU Details
+		std::cout << "GPU VENDOR : [" << glGetString(GL_VENDOR) << "]" << std::endl;
+
 		// set callbacks
 
 		glfwSetWindowUserPointer(m_Window, &m_Data);

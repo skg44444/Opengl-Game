@@ -46,6 +46,27 @@ namespace Lib
 		glProgramUniform3fv(m_Id, location, 1, glm::value_ptr(value));
 	}
 
+	void OpenGlShader::SetFloat(const std::string& name, const float value)
+	{
+
+		GLint location = glGetUniformLocation(m_Id, name.c_str());
+		if (location == -1)
+		{
+			std::cout << "Warning: Uniform '" << name << "' does not exist" << std::endl;
+		}
+		glProgramUniform1f(m_Id, location, value);
+	}
+
+	void OpenGlShader::SetInt(const std::string& name, const int value)
+	{
+		GLint location = glGetUniformLocation(m_Id, name.c_str());
+		if (location == -1)
+		{
+			std::cout << "Warning: Uniform '" << name << "' does not exist" << std::endl;
+		}
+		glProgramUniform1i(m_Id, location, value);
+	}
+
 	void OpenGlShader::Bind()
 	{
 		glUseProgram(m_Id);

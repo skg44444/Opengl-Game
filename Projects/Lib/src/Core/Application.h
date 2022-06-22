@@ -21,6 +21,8 @@ namespace Lib
 		static Application* s_Instance;
 
 		std::vector<ApplicationLayer*> m_LayerStack;
+
+		float lastframetime = 0.0f;
 	};
 
 	Application* CreateApplication();

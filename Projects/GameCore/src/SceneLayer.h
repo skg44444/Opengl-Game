@@ -12,7 +12,7 @@ public:
 	~SceneLayer();
 
 	void OnUpdate(float dt, float AspectRatio) override;
-	void OnImGuiRender() override;
+	void OnImGuiRender(float dt) override;
 private:
 	std::shared_ptr<Lib::Scene> m_ActiveScene;
 	Lib::Entity m_SelectionContext;

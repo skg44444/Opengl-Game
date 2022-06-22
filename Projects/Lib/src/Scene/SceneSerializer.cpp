@@ -31,10 +31,19 @@ namespace Lib
 
 		if (entity.HasComponent<LightComponent>())
 		{
-			auto& lightColor = entity.GetComponents<LightComponent>().Color;
-			entitydata["Light"]["color"]["r"] = lightColor.r;
-			entitydata["Light"]["color"]["g"] = lightColor.g;
-			entitydata["Light"]["color"]["b"] = lightColor.b;
+			auto& lightComponent = entity.GetComponents<LightComponent>();
+			entitydata["Light"]["color"]["r"] = lightComponent.diffuse.r;
+			entitydata["Light"]["color"]["g"] = lightComponent.diffuse.g;
+			entitydata["Light"]["color"]["b"] = lightComponent.diffuse.b;
+
+			entitydata["Light"]["ambient"] = lightComponent.ambient;
+			entitydata["Light"]["specular"] = lightComponent.specular;
+
+			entitydata["Light"]["constant"] = lightComponent.constant;
+			entitydata["Light"]["linear"] = lightComponent.linear;
+			entitydata["Light"]["quadratic"] = lightComponent.quadratic;
+
+			entitydata["Light"]["mode"] = (int)lightComponent.mode;
 		}
 
 		if (entity.HasComponent<ModelComponent>())
@@ -45,6 +54,11 @@ namespace Lib
 		if (entity.HasComponent<TextureComponent>())
 		{
 			entitydata["Texture"]["Path"] = entity.GetComponents<TextureComponent>().m_Path;
+		}
+
+		if (entity.HasComponent<ScriptComponent>())
+		{
+			entitydata["Script"]["Path"] = entity.GetComponents<ScriptComponent>().m_Path;
 		}
 		return entitydata;
 	}
@@ -130,10 +144,19 @@ namespace Lib
 				if (entitydata["Light"].is_object())
 				{
 					auto& lightComponent = entity.AddComponent<LightComponent>();
-					lightComponent.Color = glm::vec3(
+					lightComponent.diffuse = glm::vec3(
 						entitydata["Light"]["color"]["r"],
 						entitydata["Light"]["color"]["g"],
 						entitydata["Light"]["color"]["b"]);
+
+					lightComponent.ambient = entitydata["Light"]["ambient"];
+					lightComponent.specular = entitydata["Light"]["specular"];
+					
+					lightComponent.constant = entitydata["Light"]["constant"];
+					lightComponent.linear = entitydata["Light"]["linear"];
+					lightComponent.quadratic = entitydata["Light"]["quadratic"];
+					
+					lightComponent.mode = (LightMode)entitydata["Light"]["mode"];
 				}
 
 				if (entitydata["Model"].is_object())
@@ -146,6 +169,11 @@ namespace Lib
 					auto& textureComponent = entity.AddComponent<TextureComponent>(entitydata["Texture"]["Path"]);
 					if (!m_Scene->GetTextureFromTextureLibrary(entitydata["Texture"]["Path"]))
 						m_Scene->AddNewTexture(entitydata["Texture"]["Path"]);
+				}
+
+				if (entitydata["Script"].is_object())
+				{
+					auto& scriptComponent = entity.AddComponent<ScriptComponent>(entitydata["Script"]["Path"]);
 				}
 			}
 		}
