@@ -16,8 +16,6 @@ namespace Lib
 	void Renderer3D::Init()
 	{
 		s_SceneData.m_BasicShader = Shader::CreateShader("res/shaders/basicshader.glsl");
-		s_SceneData.m_LightShader = Shader::CreateShader("res/shaders/lightshader.glsl");
-		s_SceneData.m_TextureShader = Shader::CreateShader("res/shaders/textureshader.glsl");
 		s_SceneData.m_multiLightTextureShader = Shader::CreateShader("res/shaders/multilighttextureshader.glsl");
 	}
 
@@ -31,17 +29,6 @@ namespace Lib
 		int i = 0;
 		for (auto& lightData : lightDataArray)
 		{
-#if 0
-			s_SceneData.m_LightShader->Bind();
-			s_SceneData.m_LightShader->SetVec3("lightColor", lightData.lightColor);
-			s_SceneData.m_LightShader->SetVec3("lightPos", lightData.lightPos);
-			
-
-			// Initialize texture shader
-			s_SceneData.m_TextureShader->Bind();
-			s_SceneData.m_TextureShader->SetVec3("lightColor", lightData.lightColor);
-			s_SceneData.m_TextureShader->SetVec3("lightPos", lightData.lightPos);		
-#endif
 			//Initialize multilighttexture shader
 			s_SceneData.m_multiLightTextureShader->Bind();
 			s_SceneData.m_multiLightTextureShader->SetVec3("lightpos[" + std::to_string(i) + "]", lightData.lightPos);
@@ -55,16 +42,7 @@ namespace Lib
 			i++;
 		}
 
-		//set view and projection
-#if 0
-		s_SceneData.m_LightShader->Bind();
-		s_SceneData.m_LightShader->SetMat4("proj", camera.GetProjection());
-		s_SceneData.m_LightShader->SetMat4("view", cameraView);
-		
-		s_SceneData.m_TextureShader->Bind();
-		s_SceneData.m_TextureShader->SetMat4("proj", camera.GetProjection());
-		s_SceneData.m_TextureShader->SetMat4("view", cameraView);
-#endif		
+		//set view and projection	
 		s_SceneData.m_multiLightTextureShader->Bind();
 		s_SceneData.m_multiLightTextureShader->SetMat4("proj", camera.GetProjection());
 		s_SceneData.m_multiLightTextureShader->SetMat4("view", cameraView);
@@ -84,17 +62,9 @@ namespace Lib
 	{
 		if (mode == RenderMode::MODEL)
 		{
-			//s_SceneData.m_LightShader->Bind();
-			//s_SceneData.m_LightShader->SetMat4("model", transform.GetTransform());
-			//s_SceneData.m_LightShader->SetVec3("objectColor", glm::vec3(0.5f, 0.5f, 0.5f));
-			//model->Draw();
 		}
 		else if (mode == RenderMode::TEXTURE)
 		{
-#if 0
-			s_SceneData.m_TextureShader->Bind();
-			s_SceneData.m_TextureShader->SetMat4("model", transform.GetTransform());
-#endif
 			s_SceneData.m_multiLightTextureShader->Bind();
 			s_SceneData.m_multiLightTextureShader->SetMat4("model", transform.GetTransform());
 			model->Draw();
@@ -106,6 +76,21 @@ namespace Lib
 			s_SceneData.m_BasicShader->SetVec3("objectColor", glm::vec3(1.0f, 1.0f, 1.0f));
 			model->Draw();
 		}
+	}
+
+	void Renderer3D::DrawTextureModel(const std::shared_ptr<Model>& model, const TransformComponent& transform)
+	{
+		s_SceneData.m_multiLightTextureShader->Bind();
+		s_SceneData.m_multiLightTextureShader->SetMat4("model", transform.GetTransform());
+		model->Draw();
+	}
+
+	void Renderer3D::DrawLightModel(const std::shared_ptr<Model>& model, const TransformComponent& transform, const glm::vec3& color)
+	{
+		s_SceneData.m_BasicShader->Bind();
+		s_SceneData.m_BasicShader->SetMat4("model", transform.GetTransform());
+		s_SceneData.m_BasicShader->SetVec3("objectColor", color);
+		model->Draw();
 	}
 
 }

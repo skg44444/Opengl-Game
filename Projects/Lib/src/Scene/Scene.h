@@ -22,6 +22,8 @@ namespace Lib
 		void DestroyEntity(Entity entity);
 		Entity GetEntityByTag(const std::string& name);
 		Entity GetEntityByUUID(const uint64_t uuid);
+		Entity GetCurrentCamera();
+		Entity GetCurrentPlayer();
 		void OnUpdate(float dt);
 		void SetAspectRatio(float aspectRatio) { m_AspectRatio = aspectRatio; }
 		std::vector<std::string> GetEntities();

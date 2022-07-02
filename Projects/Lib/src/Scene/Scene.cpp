@@ -97,6 +97,34 @@ namespace Lib
 		return {};
 	}
 
+	Entity Scene::GetCurrentCamera()
+	{
+		auto view = m_Registry.view<CameraComponent>();
+		for (auto entity : view)
+		{
+			if (view.get<CameraComponent>(entity).current)
+			{
+				return Entity{ entity, this };
+			}
+		}
+
+		return {};
+	}
+
+	Entity Scene::GetCurrentPlayer()
+	{
+		auto view = m_Registry.view<PlayerComponent>();
+		for (auto entity : view)
+		{
+			if (view.get<PlayerComponent>(entity).CurrentPlayer)
+			{
+				return Entity{ entity, this };
+			}
+		}
+
+		return {};
+	}
+
 	void Scene::OnUpdate(float dt)
 	{
 		Camera CurrentCamera;
@@ -155,7 +183,7 @@ namespace Lib
 		for (auto entity : lightgroup)
 		{
 			auto [transform, model, light] = lightgroup.get<TransformComponent, ModelComponent, LightComponent>(entity);
-			Renderer3D::Draw(model.ModelPtr, transform, RenderMode::LIGHT);
+			Renderer3D::DrawLightModel(model.ModelPtr, transform, light.diffuse);
 			renderpass++;
 		}
 
@@ -167,7 +195,8 @@ namespace Lib
 			if (texture.m_Path != "")
 			{
 				TextureLibrary[texture.m_Path]->Bind();
-				Renderer3D::Draw(model.ModelPtr, transform, RenderMode::TEXTURE);
+				//Renderer3D::Draw(model.ModelPtr, transform, RenderMode::TEXTURE);
+				Renderer3D::DrawTextureModel(model.ModelPtr, transform);
 			}
 			else
 			{
@@ -283,6 +312,11 @@ namespace Lib
 
 	template<>
 	void Scene::OnComponentAdded(Entity entity, ScriptComponent& component)
+	{
+	}
+	
+	template<>
+	void Scene::OnComponentAdded(Entity entity, PlayerComponent& component)
 	{
 	}
 }

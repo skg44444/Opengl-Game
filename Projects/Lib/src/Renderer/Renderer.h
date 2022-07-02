@@ -32,5 +32,7 @@ namespace Lib
 		static void EndScene();
 
 		static void Draw(const std::shared_ptr<Model>& model, const TransformComponent& transform, RenderMode mode);
+		static void DrawTextureModel(const std::shared_ptr<Model>& model, const TransformComponent& transform);
+		static void DrawLightModel(const std::shared_ptr<Model>& model, const TransformComponent& transform, const glm::vec3& color);
 	};
 }
