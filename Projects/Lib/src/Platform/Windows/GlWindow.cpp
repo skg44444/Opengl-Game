@@ -1,7 +1,13 @@
 #include "libpch.h"
 #include "GlWindow.h"
+#include "Core/Application.h"
 
 #include <glad/glad.h>
+#include <Windows.h>
+#include <commdlg.h>
+
+#define GLFW_EXPOSE_NATIVE_WIN32
+#include <GLFW/glfw3native.h>
 
 namespace Lib
 {
@@ -69,6 +75,7 @@ namespace Lib
 				data.width = width;
 				data.height = height;
 			});
+
 	}
 
 	void GlWindow::Clear()
@@ -88,4 +95,50 @@ namespace Lib
 	{
 		glfwTerminate();
 	}
+
+	// FileDialogs definition
+	std::string FileDialogs::OpenFile(const char* filter)
+	{
+		OPENFILENAMEA ofn;
+		CHAR szfilen[256] = { 0 };
+		CHAR currentDir[256] = { 0 };
+		ZeroMemory(&ofn, sizeof(OPENFILENAME));
+		ofn.lStructSize = sizeof(OPENFILENAME);
+		ofn.hwndOwner = glfwGetWin32Window((GLFWwindow*)Application::Get()->GetNativeWindow());
+		ofn.lpstrFile = szfilen;
+		ofn.nMaxFile = sizeof(szfilen);
+		if (GetCurrentDirectoryA(256, currentDir))
+			ofn.lpstrInitialDir = currentDir;
+		ofn.lpstrFilter = filter;
+		ofn.nFilterIndex = 1;
+		ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
+		
+		if (GetOpenFileNameA(&ofn) == TRUE)
+			return ofn.lpstrFile;
+
+		return std::string();
+	}
+
+	std::string FileDialogs::SaveFile(const char* filter)
+	{
+		OPENFILENAMEA ofn;
+		CHAR szfilen[256] = { 0 };
+		CHAR currentDir[256] = { 0 };
+		ZeroMemory(&ofn, sizeof(OPENFILENAME));
+		ofn.lStructSize = sizeof(OPENFILENAME);
+		ofn.hwndOwner = glfwGetWin32Window((GLFWwindow*)Application::Get()->GetNativeWindow());
+		ofn.lpstrFile = szfilen;
+		ofn.nMaxFile = sizeof(szfilen);
+		if (GetCurrentDirectoryA(256, currentDir))
+			ofn.lpstrInitialDir = currentDir;
+		ofn.lpstrFilter = filter;
+		ofn.nFilterIndex = 1;
+		ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
+
+		if (GetSaveFileNameA(&ofn) == TRUE)
+			return ofn.lpstrFile;
+
+		return std::string();
+	}
+
 }
