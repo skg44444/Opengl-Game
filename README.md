@@ -22,6 +22,8 @@ In Development:
 * Terrain Generation
 ...
 
+NOTE: Cannot Render Models without textures.
+
 
 Current Status of Application
 
