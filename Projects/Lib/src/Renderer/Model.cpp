@@ -7,4 +7,8 @@ namespace Lib
 	{
 		return std::make_shared<TinyObjModel>(filepath);
 	}
+	std::shared_ptr<Model> Model::CreateTerrain()
+	{
+		return std::make_shared<TerrainModel>();
+	}
 }

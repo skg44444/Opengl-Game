@@ -28,4 +28,13 @@ namespace Lib
 		std::vector<std::shared_ptr<OpenGlMesh>> m_Meshes;
 		std::string m_Path;
 	};
+
+	class TerrainModel : public Model
+	{
+	public:
+		TerrainModel();
+		~TerrainModel();
+		void Draw() const override;
+		std::string GetPath() const override { return std::string(); }
+	};
 }

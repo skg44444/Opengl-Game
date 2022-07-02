@@ -118,4 +118,17 @@ namespace Lib
 	/*void OpenGlMesh::SetupMesh()
 	{
 	}*/
+
+	TerrainModel::TerrainModel()
+	{
+	}
+
+	TerrainModel::~TerrainModel()
+	{
+	}
+
+	void TerrainModel::Draw() const
+	{
+	}
+
 }

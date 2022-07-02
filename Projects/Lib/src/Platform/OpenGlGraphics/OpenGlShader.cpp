@@ -115,8 +115,8 @@ namespace Lib
 			}
 		}
 
-		std::cout << Source.vertexShaderSource << std::endl;
-		std::cout << Source.fragmentShaderSource << std::endl;
+		//std::cout << Source.vertexShaderSource << std::endl;
+		//std::cout << Source.fragmentShaderSource << std::endl;
 
 		return Source;
 	}

@@ -26,5 +26,6 @@ namespace Lib
 		virtual std::string GetPath() const = 0;
 
 		static std::shared_ptr<Model> CreateModel(const std::string& filepath);
+		static std::shared_ptr<Model> CreateTerrain();
 	};
 }
