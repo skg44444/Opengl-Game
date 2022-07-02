@@ -119,4 +119,21 @@ namespace Lib
 
 		};
 	};
+
+	struct TerrainComponent
+	{
+		TerrainComponent() = default;
+		TerrainComponent(const TerrainComponent&) = default;
+	};
+
+	struct PlayerComponent
+	{
+		bool CurrentPlayer = true;
+
+		float translationalVelocity = 1.0f;
+		float rotationalVelocity = 1.0f;
+
+		PlayerComponent() = default;
+		PlayerComponent(const PlayerComponent&) = default;
+	};
 }
