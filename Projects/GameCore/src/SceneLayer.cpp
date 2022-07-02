@@ -1,4 +1,6 @@
 #include "SceneLayer.h"
+#include "Core/Window.h"
+#include "Core/Input.h"
 #include <iostream>
 #include <imgui.h>
 #include <filesystem>
@@ -8,22 +10,109 @@ SceneLayer::SceneLayer()
 {
 	m_ActiveScene = std::make_shared<Lib::Scene>();
 	m_ActiveScene->AddNewModel("res/models/cube.obj");
-	//auto& serializer = Lib::SceneSerializer(m_ActiveScene);
-	//serializer.DeSerialize("res/scenes/testscene.json");
 }
 
 SceneLayer::~SceneLayer()
 {
 }
 
+void SceneLayer::AlignCameraWithPlayer(Lib::TransformComponent& cameraTransform, Lib::TransformComponent& playerTransform)
+{
+	cameraTransform.Translation.z = playerTransform.Translation.z + cameraDistance*
+		glm::cos(cameraTransform.Rotation.x)*
+		glm::cos(playerTransform.Rotation.y);
+	cameraTransform.Translation.x = playerTransform.Translation.x + cameraDistance*
+		glm::cos(cameraTransform.Rotation.x)*
+		glm::sin(playerTransform.Rotation.y);
+	cameraTransform.Translation.y = playerTransform.Translation.y - cameraDistance*
+		glm::sin(cameraTransform.Rotation.x);
+
+	cameraTransform.Rotation.y = playerTransform.Rotation.y;
+
+}
+
 void SceneLayer::OnUpdate(float dt, float AspectRatio)
 {
 	m_ActiveScene->SetAspectRatio(AspectRatio);
 	m_ActiveScene->OnUpdate(dt);
+
+	// camera controller
+
+	//TODO : This whole has to be moved to a lua script or a native script component
+	auto& editorCamera = m_ActiveScene->GetCurrentCamera();
+	auto& currentPlayer = m_ActiveScene->GetCurrentPlayer();
+	if (editorCamera)
+	{
+		float v = 0.001f;
+		auto& cameraTransform = editorCamera.GetComponents<Lib::TransformComponent>();
+		// controller logic
+
+		if (currentPlayer)
+		{
+			auto& playerTransform = currentPlayer.GetComponents<Lib::TransformComponent>();
+			auto& playerComponent = currentPlayer.GetComponents<Lib::PlayerComponent>();
+
+			if (Lib::Input::IsKeyPressed(Lib::Key::W)) {
+				playerTransform.Translation.z -= dt * glm::cos(playerTransform.Rotation.y) * playerComponent.translationalVelocity;
+				playerTransform.Translation.x -= dt * glm::sin(playerTransform.Rotation.y) * playerComponent.translationalVelocity;
+			}
+			else if (Lib::Input::IsKeyPressed(Lib::Key::S)) {
+				playerTransform.Translation.z += dt * glm::cos(playerTransform.Rotation.y) * playerComponent.translationalVelocity;
+				playerTransform.Translation.x += dt * glm::sin(playerTransform.Rotation.y) * playerComponent.translationalVelocity;
+			}
+
+			if (Lib::Input::IsKeyPressed(Lib::Key::A)) {
+				playerTransform.Translation.x -= dt * glm::cos(playerTransform.Rotation.y) * playerComponent.translationalVelocity;
+				playerTransform.Translation.z += dt * glm::sin(playerTransform.Rotation.y) * playerComponent.translationalVelocity;
+				//playerTransform.Rotation.y += dt * playerComponent.rotationalVelocity;
+			}
+			else if (Lib::Input::IsKeyPressed(Lib::Key::D)) {
+				//playerTransform.Rotation.y -= dt * playerComponent.translationalVelocity;
+				playerTransform.Translation.x += dt * glm::cos(playerTransform.Rotation.y) * playerComponent.translationalVelocity;
+				playerTransform.Translation.z -= dt * glm::sin(playerTransform.Rotation.y) * playerComponent.translationalVelocity;
+			}
+
+			if (Lib::Input::IsKeyPressed(Lib::Key::Z))
+			{
+				if (Lib::Input::IsKeyPressed(Lib::Key::I))
+				{
+					if (cameraDistance > 0)
+						cameraDistance -= 0.02f;
+				}
+				else if (Lib::Input::IsKeyPressed(Lib::Key::O))
+				{
+					cameraDistance += 0.02f;
+				}
+			}
+
+			if (Lib::Input::IsMouseButtonPressed(Lib::Mouse::ButtonLeft) && !MouseLeftButtonPressed)
+			{
+				MousePosition = Lib::Input::GetMousePosition();
+				MouseLeftButtonPressed = true;
+				PlayerRotation = { playerTransform.Rotation.x, playerTransform.Rotation.y };
+				cameraRotation = { cameraTransform.Rotation.x, cameraTransform.Rotation.y };
+			}
+			if (!Lib::Input::IsMouseButtonPressed(Lib::Mouse::ButtonLeft) && MouseLeftButtonPressed)
+			{
+				MousePosition = glm::vec2(0.0f);
+				MouseLeftButtonPressed = false;
+			}
+
+			if (MouseLeftButtonPressed)
+			{
+				//cameraTransform.Rotation.y = cameraRotation.y - (MousePosition.x - Lib::Input::GetMousePosition().x) * 0.001;
+				cameraTransform.Rotation.x = cameraRotation.x + (MousePosition.y - Lib::Input::GetMousePosition().y) * 0.001;
+				playerTransform.Rotation.y = PlayerRotation.y + (MousePosition.x - Lib::Input::GetMousePosition().x) * 0.001;
+			}
+			AlignCameraWithPlayer(cameraTransform, playerTransform);
+		}
+		
+	}
 }
 
 void SceneLayer::OnImGuiRender(float dt)
 {
+	
 	ImGui::Begin("Entities");
 	if (ImGui::Button("New Entity"))
 		auto& modelentity = m_ActiveScene->CreateEntity(0, "New Empty Entity");
@@ -162,6 +251,14 @@ void SceneLayer::OnImGuiRender(float dt)
 			}
 			ImGui::EndGroup();
 		}
+		if (m_SelectionContext.HasComponent<Lib::PlayerComponent>())
+		{
+			auto& currentPlayerPtr = m_SelectionContext.GetComponents<Lib::PlayerComponent>();
+			ImGui::Text("Player");
+			ImGui::Checkbox("Current Player", &currentPlayerPtr.CurrentPlayer);
+			ImGui::SliderFloat("Translation Speed", &currentPlayerPtr.translationalVelocity, 0.0f, 10.0f);
+			ImGui::SliderFloat("Rotational Speed", &currentPlayerPtr.rotationalVelocity, 0.0f, 10.0f);
+		}
 
 		if (ImGui::Button("Add Component"))
 			ImGui::OpenPopup("AddComponent");
@@ -195,6 +292,11 @@ void SceneLayer::OnImGuiRender(float dt)
 				if (!m_SelectionContext.HasComponent<Lib::ScriptComponent>())
 					m_SelectionContext.AddComponent<Lib::ScriptComponent>("");
 			}
+			if (ImGui::MenuItem("Player"))
+			{
+				if (!m_SelectionContext.HasComponent<Lib::PlayerComponent>())
+					m_SelectionContext.AddComponent<Lib::PlayerComponent>();
+			}
 			ImGui::EndPopup();
 		}
 
@@ -207,29 +309,21 @@ void SceneLayer::OnImGuiRender(float dt)
 	}
 
 	ImGui::Begin("Models");
-	ImGui::SameLine();
-	ImGui::PushItemWidth(-1);
 	if (ImGui::Button("Add Model"))
-		ImGui::OpenPopup("AddModel");
-	if (ImGui::BeginPopup("AddModel"))
 	{
-		ImGui::BeginGroup();
-		ImGui::Text("LoadModelPath");
-		static char buf3[256];
-		ImGui::SameLine();
-		auto modelpathinput = ImGui::InputText("##LoadModelPath", buf3, IM_ARRAYSIZE(buf3));
-		if (ImGui::Button("Add"))
+		std::string buf3 = Lib::FileDialogs::OpenFile(".obj");
+		auto path = std::filesystem::path(buf3);
+		std::filesystem::path cwd = std::filesystem::current_path();
+		buf3 = std::filesystem::relative(path, cwd).generic_string();
+
+		if (!buf3.empty())
 		{
 			if (!m_ActiveScene->GetModelFromModelLibrary(buf3))
 			{
 				m_ActiveScene->AddNewModel(buf3);
-				ImGui::CloseCurrentPopup();
 			}
 		}
-		ImGui::EndGroup();
-		ImGui::EndPopup();
 	}
-	ImGui::PopItemWidth();
 	for (auto& it = m_ActiveScene->begin(); it != m_ActiveScene->end(); ++it)
 	{
 		ImGui::Text(it->first.c_str());
@@ -248,50 +342,35 @@ void SceneLayer::OnImGuiRender(float dt)
 		serializer.Serialize(currentscenepath);
 	}
 	if (ImGui::Button("Save As"))
-		ImGui::OpenPopup("SaveAs");
-	
-	if (ImGui::BeginPopup("SaveAs"))
 	{
-		ImGui::BeginGroup();
-		static char filepathbuf[512];
-		auto filepathinput = ImGui::InputText("##FilePath", filepathbuf, IM_ARRAYSIZE(filepathbuf));
-		ImGui::SameLine();
-		if (ImGui::Button("OK"))
+		std::string filepathbuf = Lib::FileDialogs::SaveFile(".json");
+		auto path = std::filesystem::path(filepathbuf);
+		std::filesystem::path cwd = std::filesystem::current_path();
+		filepathbuf = std::filesystem::relative(path, cwd).generic_string();
+		if (!filepathbuf.empty())
 		{
 			auto& serializer = Lib::SceneSerializer(m_ActiveScene);
 			serializer.Serialize(filepathbuf);
 			currentscenepath = filepathbuf;
-			ImGui::CloseCurrentPopup();
 		}
-		ImGui::EndGroup();
-		ImGui::EndPopup();
 	}
 	
 	if (ImGui::Button("Open"))
-		ImGui::OpenPopup("Open");
-
-	if (ImGui::BeginPopup("Open"))
 	{
-		ImGui::BeginGroup();
-		static char filepathbuf2[512];
-		auto filepathinput = ImGui::InputText("##OpenFilePath", filepathbuf2, IM_ARRAYSIZE(filepathbuf2));
-		ImGui::SameLine();
-		if (ImGui::Button("Open File"))
+		std::string filepathbuf2 = Lib::FileDialogs::OpenFile(".json");
+		auto path = std::filesystem::path(filepathbuf2);
+		std::filesystem::path cwd = std::filesystem::current_path();
+		filepathbuf2 = std::filesystem::relative(path, cwd).generic_string();
+		if (!filepathbuf2.empty())
 		{
 			auto newScene = std::make_shared<Lib::Scene>();
 			auto& serializer = Lib::SceneSerializer(newScene);
-			if (std::filesystem::exists(filepathbuf2))
-			{
-				serializer.DeSerialize(filepathbuf2);
-				currentscenepath = filepathbuf2;
+			serializer.DeSerialize(filepathbuf2);
+			currentscenepath = filepathbuf2;
 
-				m_ActiveScene = newScene;
-				m_SelectionContext = {};
-			}
-			ImGui::CloseCurrentPopup();
+			m_ActiveScene = newScene;
+			m_SelectionContext = {};
 		}
-		ImGui::EndGroup();
-		ImGui::EndPopup();
 	}
 	ImGui::End();
 
